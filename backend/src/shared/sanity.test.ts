@@ -1,5 +1,5 @@
 import request from 'supertest';
-import app from '../src/app';
+import app from '../app';
 
 describe('Auth Module', () => {
   it('should return 401 for unauthorized lesson access', async () => {

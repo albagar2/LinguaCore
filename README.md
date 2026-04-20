@@ -1,6 +1,19 @@
-# LinguaCore - Advanced English Learning Platform
+# LinguaCore - Advanced English Learning Platform 🚀
 
-LinguaCore is a professional, production-ready full-stack application designed to help users learn English from zero to native fluency. Built with modern technologies and a focus on security, scalability, and premium user experience.
+LinguaCore is a professional, production-ready full-stack application designed to take users from zero to native English fluency. It combines premium aesthetics, advanced security, and modern learning patterns like gamification and AI-assisted coaching.
+
+## ✨ Key Features
+
+- **📊 Personal Dashboard:** Track your XP, Daily Streaks, and overall progress in real-time.
+- **🔊 Interactive Audio (TTS):** Native pronunciation available across the Glossary and Lessons using browser-native Speech Synthesis.
+- **🤖 AI Writing Coach:** Get professional feedback on your writing including clarity scores and grammatical corrections.
+- **🎮 Gamified Learning:** Earn points (XP) by completing lessons and maintain streaks to build a consistent learning habit.
+- **⌨️ Fluid UX:** Intensive keyboard support (1-4 keys, Enter) for a lightning-fast learning experience.
+- **🛡️ Security-First:** Argon2 hashing, JWT sessions, Helmet headers, and Zod validation.
+
+## 📖 Documentation
+- [User Manual](docs/USER_MANUAL.md) - How to use the platform.
+- [Developer Manual](docs/DEV_MANUAL.md) - Architecture and extension guide.
 
 ## 🚀 Quick Start (Windows)
 
@@ -9,13 +22,11 @@ LinguaCore is a professional, production-ready full-stack application designed t
 - npm (v8.x or higher)
 
 ### Installation & Setup
-
-1. **Clone the repository** (if not already there)
-2. **Run the setup script**:
+1. **Clone the repository**
+2. **Run setup**:
    ```powershell
    cd backend
    npm install
-   npm run prisma:generate
    npm run prisma:push
    npm run prisma:seed
    
@@ -24,61 +35,21 @@ LinguaCore is a professional, production-ready full-stack application designed t
    ```
 
 ### Execution
-
-1. **Start Backend**:
-   ```powershell
-   cd backend
-   npm run dev
-   ```
-2. **Start Frontend**:
-   ```powershell
-   cd frontend
-   npm run dev
-   ```
+1. **Start Backend**: `cd backend; npm run dev`
+2. **Start Frontend**: `cd frontend; npm run dev`
 
 ---
 
-## 🛡️ Security Implementation (OWASP Top 10)
-
-This application was built with a "Security-First" mindset:
-
-1. **Authentication (JWT & Argon2)**: Secure password hashing using Argon2 (modern alternative to Bcrypt) and stateless authentication via JWT.
-2. **Input Validation (Zod)**: All API endpoints are protected by schema validation to prevent malformed data and injection.
-3. **Protection Headers (Helmet)**: Implements HTTP security headers to prevent XSS, clickjacking, and other common attacks.
-4. **CORS Control**: Restricted cross-origin resource sharing to trusted domains.
-5. **Rate Limiting**: (Planned/Implementation ready) Prevents Brute-force and DoS attacks.
-6. **SQL Injection Prevention**: Using Prisma ORM with parameterized queries.
-7. **RBAC (Role-Based Access Control)**: Granular permissions for Students and Admins.
-
----
-
-## 🏗️ Architecture
-
-- **Backend**: Clean Architecture principles. Separated by modules (Auth, Lessons, Progress).
-- **Frontend**: React with Vite, utilizing Zustand for state management and Framer Motion for premium aesthetics.
-- **Database**: PostgreSQL (demonstrated with SQLite for easy local setup).
-
----
+## 🏗️ Technical Architecture
+- **Backend:** Node.js, Express, Prisma, SQLite/PostgreSQL.
+- **Frontend:** React, Vite, TypeScript, Zustand, Framer Motion, Lucide Icons.
+- **Security:** OWASP Top 10 compliance, RBAC support.
 
 ## 🧪 Testing
-
-- **Backend**: Integration tests with Jest and Supertest.
-- **Run tests**:
-  ```bash
-  cd backend
-  npm test
-  ```
-
----
-
-## 🔮 Future Improvements
-
-1. **AI Speaking Evaluation**: Integrate OpenAI Whisper or Azure Voice for real-time pronunciation feedback.
-2. **Real-time Chatbot**: A dedicated "English Coach" powered by LLMs.
-3. **Gamification**: Badges, streaks, and experience points (XP).
-4. **Mobile App**: Native version using React Native or Capacitor.
-5. **Server-Side Rendering (SSR)**: Migrate to Next.js for better SEO and performance.
+- **Backend:** Integration tests with Jest and Supertest.
+- `cd backend; npm test`
 
 ---
 
 ## 👩‍💻 Developed with ❤️ by Antigravity
+Building the future of personalized language education.
