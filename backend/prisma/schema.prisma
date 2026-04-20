@@ -62,6 +62,8 @@ model Vocabulary {
   id          String   @id @default(uuid())
   word        String   @unique
   meaning     String
+  translation String?
+  synonyms    String?
   example     String?
   level       String   // BEGINNER, INTERMEDIATE, ADVANCED
   category    String   // NOUN, VERB, IDIOM, PHRASAL_VERB

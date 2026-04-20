@@ -6,6 +6,7 @@ import { errorHandler } from './middleware/errorHandler';
 import authRoutes from './modules/auth/auth.routes';
 import lessonRoutes from './modules/lessons/lessons.routes';
 import vocabularyRoutes from './modules/vocabulary/vocabulary.routes';
+import docsRoutes from './modules/docs/docs.routes';
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use(morgan('dev')); // Logger
 app.use('/api/auth', authRoutes);
 app.use('/api/lessons', lessonRoutes);
 app.use('/api/vocabulary', vocabularyRoutes);
+app.use('/api/docs', docsRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

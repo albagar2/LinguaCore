@@ -9,8 +9,12 @@ import Lessons from './pages/Lessons';
 import LessonDetail from './pages/LessonDetail';
 import Glossary from './pages/Glossary';
 import WritingCoach from './pages/WritingCoach';
-import { useAuthStore } from './store/authStore';
+import Flashcards from './pages/Flashcards';
+import Documentation from './pages/Documentation';
 
+import { useAuthStore } from './store/authStore';
+import { useThemeStore } from './store/themeStore';
+import { TranslationProvider } from './context/TranslationContext';
 import { Toaster } from 'sonner';
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -19,10 +23,21 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 function App() {
+  const { isDarkMode } = useThemeStore();
+
+  React.useEffect(() => {
+    if (!isDarkMode) {
+      document.body.classList.add('light-theme');
+    } else {
+      document.body.classList.remove('light-theme');
+    }
+  }, [isDarkMode]);
+
   return (
-    <Router>
-      <Toaster position="top-right" expand={true} richColors />
-      <Layout>
+    <TranslationProvider>
+      <Router>
+        <Toaster position="top-right" expand={true} richColors />
+        <Layout>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route 
@@ -67,9 +82,26 @@ function App() {
               </ProtectedRoute>
             } 
           />
+          <Route 
+            path="/flashcards" 
+            element={
+              <ProtectedRoute>
+                <Flashcards />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/documentation" 
+            element={
+              <ProtectedRoute>
+                <Documentation />
+              </ProtectedRoute>
+            } 
+          />
         </Routes>
       </Layout>
     </Router>
+  </TranslationProvider>
   );
 }
 

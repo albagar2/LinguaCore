@@ -2,9 +2,14 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Award, BookOpen, ChevronRight, Volume2 } from 'lucide-react';
+import { 
+    ArrowLeft, Award, BookOpen, ChevronRight, 
+    Volume2, Mic, MicOff 
+} from 'lucide-react';
 import { toast } from 'sonner';
 import { useTTS } from '../hooks/useTTS';
+import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
+import SmartText from '../components/SmartText';
 
 type ViewMode = 'theory' | 'practice';
 
@@ -12,13 +17,14 @@ const LessonDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { speak } = useTTS();
+  const { isListening, transcript, startListening, stopListening, error } = useSpeechRecognition();
   
   const [lesson, setLesson] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState<ViewMode>('theory');
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
-  const [feedback, setFeedback] = useState<{ correct: boolean; message: string } | null>(null);
+  const [feedback, setFeedback] = useState<{ correct: boolean; message: string; score?: number } | null>(null);
   const [score, setScore] = useState(0);
 
   useEffect(() => {
@@ -36,24 +42,42 @@ const LessonDetail: React.FC = () => {
 
   const handleCheck = useCallback(() => {
     const currentExercise = lesson.exercises[currentExerciseIndex];
-    if (!selectedOption) return;
+    const isSpeaking = currentExercise.type === 'SPEAKING';
     
-    const userAnswer = selectedOption.trim().toLowerCase();
-    const correctAnswer = currentExercise.correctAnswer.trim().toLowerCase();
-    const isCorrect = userAnswer === correctAnswer;
+    if (!selectedOption && !isSpeaking) return;
+    
+    let isCorrect = false;
+    let pronunciationScore = 0;
+
+    if (isSpeaking) {
+        const target = currentExercise.correctAnswer.toLowerCase().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g,"");
+        const spoken = transcript.toLowerCase().replace(/[.,/#!$%^&*;:{}=\-_`~()]/g,"");
+        
+        // Simple fuzzy match: count matching words
+        const targetWords = target.split(' ');
+        const spokenWords = spoken.split(' ');
+        const matches = targetWords.filter(w => spokenWords.includes(w)).length;
+        pronunciationScore = Math.round((matches / targetWords.length) * 100);
+        isCorrect = pronunciationScore > 70;
+    } else {
+        const userAnswer = selectedOption?.trim().toLowerCase();
+        const correctAnswer = currentExercise.correctAnswer.trim().toLowerCase();
+        isCorrect = userAnswer === correctAnswer;
+    }
     
     if (isCorrect) {
       setScore(prev => prev + 10);
-      toast.success("Brilliant!");
+      toast.success(isSpeaking ? `Great Pronunciation! (${pronunciationScore}%)` : "Brilliant!");
     } else {
-      toast.error("Not quite...");
+      toast.error(isSpeaking ? `Keep practicing... (${pronunciationScore}%)` : "Not quite...");
     }
 
     setFeedback({
       correct: isCorrect,
-      message: isCorrect ? 'Great job!' : `Correct answer: ${currentExercise.correctAnswer}`
+      score: pronunciationScore,
+      message: isCorrect ? 'Great job!' : `Expected: ${currentExercise.correctAnswer}`
     });
-  }, [lesson, currentExerciseIndex, selectedOption]);
+  }, [lesson, currentExerciseIndex, selectedOption, transcript]);
 
   const nextStep = useCallback(() => {
     setFeedback(null);
@@ -62,7 +86,6 @@ const LessonDetail: React.FC = () => {
       setCurrentExerciseIndex(prev => prev + 1);
     } else {
         const finalScore = score + (feedback?.correct ? 10 : 0);
-        // Save progress to backend
         api.post(`/lessons/${id}/complete`, { score: finalScore })
             .then(() => {
                 toast.success("Lesson Completed!", {
@@ -72,7 +95,7 @@ const LessonDetail: React.FC = () => {
                 navigate('/dashboard');
             })
             .catch(() => {
-                toast.success("Lesson Completed!"); // Still show success even if XP save fails
+                toast.success("Lesson Completed!");
                 navigate('/lessons');
             });
     }
@@ -81,6 +104,8 @@ const LessonDetail: React.FC = () => {
   // Keyboard Support
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+        const isInput = e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement;
+        
         if (mode === 'theory') {
             if (e.key === 'Enter') setMode('practice');
             return;
@@ -91,7 +116,15 @@ const LessonDetail: React.FC = () => {
             return;
         }
 
-        if (lesson?.exercises[currentExerciseIndex]?.type === 'MULTIPLE_CHOICE') {
+        if (e.code === 'Space' && !isInput) {
+            e.preventDefault();
+            const currentExercise = lesson?.exercises[currentExerciseIndex];
+            if (currentExercise) speak(currentExercise.question || currentExercise.correctAnswer);
+            return;
+        }
+
+        const type = lesson?.exercises[currentExerciseIndex]?.type;
+        if (type === 'MULTIPLE_CHOICE' || type === 'LISTENING') {
             const num = parseInt(e.key);
             const options = JSON.parse(lesson.exercises[currentExerciseIndex].options);
             if (num > 0 && num <= options.length) {
@@ -99,18 +132,18 @@ const LessonDetail: React.FC = () => {
             }
         }
 
-        if (e.key === 'Enter' && selectedOption) {
+        if (e.key === 'Enter' && (selectedOption || type === 'SPEAKING')) {
             handleCheck();
         }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [mode, feedback, selectedOption, lesson, currentExerciseIndex, handleCheck, nextStep]);
+  }, [mode, feedback, selectedOption, lesson, currentExerciseIndex, handleCheck, nextStep, speak]);
 
   if (loading) return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
-      <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }} style={{ border: '4px solid var(--border)', borderTop: '4px solid var(--primary)', borderRadius: '50%', width: '40px', height: '40px' }} />
+    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10rem' }}>
+        <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }} style={{ border: '4px solid var(--border)', borderTop: '4px solid var(--primary)', borderRadius: '50%', width: '40px', height: '40px' }} />
     </div>
   );
   
@@ -119,10 +152,10 @@ const LessonDetail: React.FC = () => {
   const progressPercentage = mode === 'theory' ? 0 : ((currentExerciseIndex + 1) / lesson.exercises.length) * 100;
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+    <div style={{ maxWidth: '1000px', margin: '0 auto', paddingBottom: '5rem' }}>
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
-        <button onClick={() => navigate('/lessons')} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'none', color: 'var(--text-muted)' }}>
+        <button onClick={() => navigate('/lessons')} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'none', color: 'var(--text-muted)', cursor: 'pointer', border: 'none' }}>
           <ArrowLeft size={18} /> BACK
         </button>
         <div style={{ display: 'flex', gap: '1rem' }}>
@@ -154,9 +187,12 @@ const LessonDetail: React.FC = () => {
                 >
                     <Volume2 size={24} />
                 </button>
+
                 <div style={{ lineHeight: '1.8', fontSize: '1.1rem', color: '#d1d5db', background: 'rgba(255,255,255,0.02)', padding: '2.5rem', borderRadius: '16px', border: '1px solid var(--border)' }}>
                     {lesson.content.split('\n').map((line: string, i: number) => (
-                        <p key={i} style={{ marginBottom: '1rem' }}>{line}</p>
+                        <p key={i} style={{ marginBottom: '1rem' }}>
+                            <SmartText>{line}</SmartText>
+                        </p>
                     ))}
                 </div>
             </div>
@@ -197,9 +233,10 @@ const LessonDetail: React.FC = () => {
                     index={currentExerciseIndex}
                     total={lesson.exercises.length}
                     speak={speak}
+                    speakingProps={{ isListening, transcript, startListening, stopListening, error }}
                 />
                 <p style={{ marginTop: '2rem', color: 'var(--text-muted)', fontSize: '0.8rem', textAlign: 'center' }}>
-                    Tip: Use [1-4] keys for options, [Enter] to check
+                    Tip: Use [1-4] for options, [Space] to repeat audio, [Enter] to check
                 </p>
             </div>
           </motion.div>
@@ -220,18 +257,73 @@ const Tab = ({ active, label }: { active: boolean, label: string }) => (
     }}>{label}</span>
 )
 
-const ExerciseRenderer = ({ exercise, feedback, selectedOption, setSelectedOption, handleCheck, nextStep, index, total, speak }: any) => {
+const ExerciseRenderer = ({ exercise, feedback, selectedOption, setSelectedOption, handleCheck, nextStep, index, total, speak, speakingProps }: any) => {
+    const isListeningType = exercise.type === 'LISTENING';
+    const isSpeakingType = exercise.type === 'SPEAKING';
+
     return (
         <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                <span style={{ color: 'var(--primary)', fontWeight: '900', fontSize: '0.8rem', letterSpacing: '2px' }}>EXERCISE {index + 1} / {total}</span>
-                <button onClick={() => speak(exercise.question)} style={{ background: 'none', color: 'var(--primary)', cursor: 'pointer' }}>
-                    <Volume2 size={20} />
+                <span style={{ color: 'var(--primary)', fontWeight: '900', fontSize: '0.8rem', letterSpacing: '2px' }}>
+                    EXERCISE {index + 1} / {total} {isListeningType && '(LISTENING)'} {isSpeakingType && '(SPEAKING)'}
+                </span>
+                <button onClick={() => speak(exercise.question || exercise.correctAnswer)} style={{ background: 'rgba(99, 102, 241, 0.1)', border: 'none', borderRadius: '50%', width: '40px', height: '40px', color: 'var(--primary)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Volume2 size={24} />
                 </button>
             </div>
-            <h2 style={{ fontSize: '2.2rem', marginBottom: '2.5rem' }}>{exercise.question}</h2>
+            
+            {isListeningType ? (
+                <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+                    <motion.button 
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => speak(exercise.question)}
+                        style={{ padding: '2rem', background: 'rgba(255,255,255,0.02)', border: '2px dashed var(--primary)', borderRadius: '24px', width: '100%', cursor: 'pointer' }}
+                    >
+                        <Volume2 size={48} color="var(--primary)" style={{ marginBottom: '1rem' }} />
+                        <h2 style={{ fontSize: '1.8rem' }}>Listen carefully...</h2>
+                        <p style={{ color: 'var(--text-muted)' }}>Click to play or press Space</p>
+                    </motion.button>
+                </div>
+            ) : isSpeakingType ? (
+                <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+                    <h4 style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>Read the following aloud:</h4>
+                    <h2 style={{ fontSize: '2.5rem', marginBottom: '3rem', color: 'var(--primary)' }}>"{exercise.correctAnswer}"</h2>
+                    
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem' }}>
+                        <motion.button 
+                            animate={{ scale: speakingProps.isListening ? [1, 1.1, 1] : 1 }}
+                            transition={{ repeat: Infinity, duration: 1.5 }}
+                            onMouseDown={speakingProps.startListening}
+                            onMouseUp={speakingProps.stopListening}
+                            style={{ 
+                                width: '80px', height: '80px', borderRadius: '50%',
+                                background: speakingProps.isListening ? 'var(--danger)' : 'var(--primary)',
+                                border: 'none', color: 'white', cursor: 'pointer',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                boxShadow: speakingProps.isListening ? '0 0 20px rgba(244, 63, 94, 0.4)' : '0 0 20px rgba(99, 102, 241, 0.4)'
+                            }}
+                        >
+                            {speakingProps.isListening ? <MicOff size={32} /> : <Mic size={32} />}
+                        </motion.button>
+                        <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+                            {speakingProps.isListening ? 'Listening...' : 'Hold to speak'}
+                        </p>
+                        
+                        {speakingProps.transcript && (
+                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '12px' }}>
+                                <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>You said: </span>
+                                <span style={{ fontWeight: 'bold' }}>"{speakingProps.transcript}"</span>
+                            </motion.div>
+                        )}
+                        {speakingProps.error && <p style={{ color: 'var(--danger)', fontSize: '0.8rem' }}>Error: {speakingProps.error}</p>}
+                    </div>
+                </div>
+            ) : (
+                <h2 style={{ fontSize: '2.2rem', marginBottom: '2.5rem' }}><SmartText>{exercise.question}</SmartText></h2>
+            )}
 
-            {exercise.type === 'MULTIPLE_CHOICE' && (
+            {(exercise.type === 'MULTIPLE_CHOICE' || exercise.type === 'LISTENING') && (
                 <div style={{ display: 'grid', gap: '1rem' }}>
                     {JSON.parse(exercise.options).map((opt: string, i: number) => (
                         <button 
@@ -281,14 +373,17 @@ const ExerciseRenderer = ({ exercise, feedback, selectedOption, setSelectedOptio
 
             {feedback && (
                 <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} style={{ marginTop: '2.5rem', padding: '1.5rem', borderRadius: '12px', background: feedback.correct ? 'rgba(16,185,129,0.1)' : 'rgba(244,63,94,0.1)', color: feedback.correct ? 'var(--accent)' : 'var(--danger)' }}>
-                    <strong>{feedback.correct ? 'Correct!' : 'Correction:'}</strong>
-                    <p style={{ marginTop: '0.5rem', color: 'white' }}>{exercise.explanation}</p>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <strong>{feedback.correct ? 'Correct!' : 'Correction:'}</strong>
+                        {feedback.score !== undefined && <span>Accuracy: {feedback.score}%</span>}
+                    </div>
+                    <p style={{ marginTop: '0.5rem', color: 'white' }}><SmartText>{exercise.explanation}</SmartText></p>
                 </motion.div>
             )}
 
             <div style={{ marginTop: '4rem', display: 'flex', justifyContent: 'flex-end' }}>
                 {!feedback ? (
-                    <button onClick={handleCheck} className="btn-primary" disabled={!selectedOption} style={{ padding: '1rem 3rem' }}>CHECK</button>
+                    <button onClick={handleCheck} className="btn-primary" disabled={!isSpeakingType && !selectedOption} style={{ padding: '1rem 3rem' }}>CHECK</button>
                 ) : (
                     <button onClick={nextStep} className="btn-primary" style={{ padding: '1rem 3rem', background: 'var(--accent)' }}>CONTINUE</button>
                 )}

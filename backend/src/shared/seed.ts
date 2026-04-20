@@ -25,6 +25,11 @@ async function main() {
     },
   });
 
+  // Clear existing content to avoid duplicates for lessons/exercises
+  await prisma.exercise.deleteMany();
+  await prisma.lesson.deleteMany();
+  await prisma.vocabulary.deleteMany();
+
   // --- LESSON 1: Phrasal Verbs ---
   await prisma.lesson.create({
     data: {
@@ -48,13 +53,13 @@ async function main() {
             question: 'What does "Call off" mean?',
             options: JSON.stringify(['Cancel', 'Postpone', 'Continue', 'Start']),
             correctAnswer: 'Cancel',
-            explanation: 'To "call off" means to decide that a planned event will not happen.'
+            explanation: 'To "call off" means to decide that a planned event will not happen. It is commonly used in professional contexts like "calling off a meeting" or social ones like "calling off a wedding". Note that "postpone" would be "put off", which means moving it to a later date, whereas "call off" is a definitive cancellation.'
           },
           {
             type: 'FILL_BLANKS',
             question: 'I will ______ you up at 8 PM.',
             correctAnswer: 'pick',
-            explanation: 'To "pick up" someone is to collect them, usually in a vehicle.'
+            explanation: 'The verb "pick up" here means to collect someone, usually in a vehicle. It is a separable phrasal verb, meaning you can say "pick you up" or "pick up John". If you use a pronoun like "you", it MUST go in the middle: "pick you up".'
           }
         ]
       }
@@ -83,14 +88,14 @@ async function main() {
             type: 'FILL_BLANKS',
             question: 'Tell me about your __________.',
             correctAnswer: 'background',
-            explanation: 'This refers to your history and experience.'
+            explanation: 'In an interview, "background" refers to your professional history, education, and relevant life experiences. It provides the recruiter with a context of who you are as a professional. Common phrases include: "My background is in sales" or "I have a strong academic background in engineering".'
           },
           {
             type: 'MULTIPLE_CHOICE',
             question: 'Which term refers to your professional skills?',
             options: JSON.stringify(['Strengths', 'Powers', 'Forces', 'Goods']),
             correctAnswer: 'Strengths',
-            explanation: '"Strengths" is the professional way to describe yours positive attributes.'
+            explanation: '"Strengths" is the standard professional term for the skills or qualities you excel at. In an interview, you should match your strengths with the job requirements. Avoid "Powers" or "Forces" as they sound more like superhero traits than professional attributes.'
           }
         ]
       }
@@ -119,33 +124,82 @@ async function main() {
             question: 'What is the past form of "GO"?',
             options: JSON.stringify(['Goed', 'Went', 'Gone', 'Goes']),
             correctAnswer: 'Went',
-            explanation: '"Go" is an irregular verb.'
+            explanation: '"Go" is one of the most common irregular verbs in English. Its past simple form is "went" and its past participle is "gone". You should NEVER add "-ed" to irregular verbs; "goed" is a very common mistake for beginners.'
           }
         ]
       }
     }
   });
 
-  console.log('📖 Seeding Vocabulary Glossary...');
+  // --- LESSON 4: Present Perfect ---
+  await prisma.lesson.create({
+    data: {
+      title: 'The Present Perfect',
+      description: 'Linking the past with the present.',
+      content: `The Present Perfect is used to talk about experiences or actions that started in the past and continue in the present.
+      
+      Structure: Have/Has + Past Participle.
+      - I have seen that movie before. (Experience)
+      - She has lived here for 10 years. (Continuing action)
+      
+      Signal Words: Just, already, yet, ever, never, for, since.`,
+      level: 'INTERMEDIATE',
+      category: 'GRAMMAR',
+      exercises: {
+        create: [
+          {
+            type: 'MULTIPLE_CHOICE',
+            question: 'Which is correct for a life experience?',
+            options: JSON.stringify(['I have gone to Paris', 'I have been to Paris', 'I went to Paris', 'I was in Paris']),
+            correctAnswer: 'I have been to Paris',
+            explanation: 'When talking about visited places as a life experience, we use "have been to". "Have gone to" implies that the person is still in Paris or on their way there. Using "went" (Past Simple) would require a specific time reference like "I went to Paris in 2012".'
+          }
+        ]
+      }
+    }
+  });
 
-  const vocab = [
-    { word: 'Call off', meaning: 'To cancel an event or activity.', example: 'The game was called off because of rain.', level: 'ADVANCED', category: 'PHRASAL_VERB' },
-    { word: 'Pick up', meaning: 'To collect someone or something.', example: 'I will pick you up at the airport.', level: 'ADVANCED', category: 'PHRASAL_VERB' },
-    { word: 'Background', meaning: 'A person\'s education and experience.', example: 'She has a background in psychology.', level: 'INTERMEDIATE', category: 'BUSINESS' },
-    { word: 'Strengths', meaning: 'Positive qualities or skills.', example: 'What are your main strengths?', level: 'INTERMEDIATE', category: 'BUSINESS' },
-    { word: 'Luggage', meaning: 'Bags and suitcases for travel.', example: 'I have too much luggage for this trip.', level: 'BEGINNER', category: 'VOCABULARY' },
-    { word: 'Went', meaning: 'Past form of the verb "Go".', example: 'I went to London last summer.', level: 'BEGINNER', category: 'VERB' },
+  // --- LESSON 13: Listening Practice ---
+  await prisma.lesson.create({
+    data: {
+      title: 'Listening: Daily Situations',
+      description: 'Train your ear for common social interactions.',
+      content: `Training your ear is about identifying keywords in natural speech.`,
+      level: 'BEGINNER',
+      category: 'LISTENING',
+      exercises: {
+        create: [
+          {
+            type: 'LISTENING',
+            question: 'I would like a large cappuccino with oat milk, please.',
+            options: JSON.stringify(['Large cappuccino with oat milk', 'Small latte with soy milk', 'Large tea with honey', 'Medium espresso']),
+            correctAnswer: 'Large cappuccino with oat milk',
+            explanation: 'In this prompt, the key modifiers are "large" (size) and "oat milk" (special request). In a real coffee shop environment, background noise might make these details harder to hear, so practicing focus on these specific nouns/adjectives is crucial.'
+          }
+        ]
+      }
+    }
+  });
+
+  // --- GLOSSARY SEEDING ---
+  const vocabulary = [
+    { word: 'Call off', meaning: 'To cancel something.', translation: 'Cancelar', synonyms: 'Cancel, abort', example: 'The game was called off because of rain.', level: 'ADVANCED', category: 'VERB' },
+    { word: 'Pick up', meaning: 'To collect someone or something.', translation: 'Recoger', synonyms: 'Collect, gather', example: 'I will pick you up after work.', level: 'INTERMEDIATE', category: 'VERB' },
+    { word: 'Break the ice', meaning: 'To clear social tension.', translation: 'Romper el hielo', synonyms: 'Socialize, initiate', example: 'He told a joke to break the ice.', level: 'ADVANCED', category: 'IDIOM' },
+    { word: 'Background', meaning: 'Professional history/education.', translation: 'Antecedentes / Experiencia', synonyms: 'History, experience', example: 'She has a strong background in finance.', level: 'ADVANCED', category: 'NOUN' },
+    { word: 'Strengths', meaning: 'Positive skills or attributes.', translation: 'Fortalezas', synonyms: 'Assets, skills', example: 'Leadership is one of his main strengths.', level: 'ADVANCED', category: 'NOUN' },
+    { word: 'Went', meaning: 'The past of "GO".', translation: 'Fui / Fue', synonyms: 'Traveled, moved', example: 'We went to the beach yesterday.', level: 'BEGINNER', category: 'VERB' },
+    { word: 'Attached', meaning: 'Included as a file.', translation: 'Adjunto', synonyms: 'Enclosed, linked', example: 'Please read the attached document.', level: 'INTERMEDIATE', category: 'ADJECTIVE' },
+    { word: 'Clarify', meaning: 'To make something clear.', translation: 'Aclarar', synonyms: 'Explain, elucidate', example: 'Could you please clarify your question?', level: 'INTERMEDIATE', category: 'VERB' },
+    { word: 'Eaten', meaning: 'Past participle of "EAT".', translation: 'Comido', synonyms: 'Consumed', example: 'I have already eaten breakfast.', level: 'BEGINNER', category: 'VERB' },
+    { word: 'Which', meaning: 'Relative pronoun for things.', translation: 'Cual / Que', synonyms: 'That', example: 'The car which I bought is red.', level: 'INTERMEDIATE', category: 'PRONOUN' },
   ];
 
-  for (const item of vocab) {
-    await prisma.vocabulary.upsert({
-      where: { word: item.word },
-      update: {},
-      create: item,
-    });
+  for (const item of vocabulary) {
+    await prisma.vocabulary.create({ data: item });
   }
 
-  console.log('✅ LinguaCore Theory, Practice & Glossary seeded!');
+  console.log('✅ Educational Database Synchronization Complete.');
 }
 
 main()

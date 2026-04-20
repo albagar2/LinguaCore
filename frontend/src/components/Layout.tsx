@@ -1,5 +1,6 @@
 import React from 'react';
 import Navbar from './Navbar';
+import AIChatTutor from './AIChatTutor';
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
@@ -8,6 +9,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <main style={{ flex: 1, padding: '2rem' }} className="container">
         {children}
       </main>
+      <AIChatTutor />
       <footer style={{ padding: '2rem', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.875rem' }}>
         © 2024 LinguaCore - Advanced English Learning Platform
       </footer>

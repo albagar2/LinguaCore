@@ -8,6 +8,7 @@ interface User {
   level: string;
   xp: number;
   streak: number;
+  achievements?: string[];
 }
 
 interface AuthState {

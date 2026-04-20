@@ -1,55 +1,47 @@
-# LinguaCore - Advanced English Learning Platform 🚀
+# LinguaCore - Cyber-Premium English Learning Platform 🚀
 
-LinguaCore is a professional, production-ready full-stack application designed to take users from zero to native English fluency. It combines premium aesthetics, advanced security, and modern learning patterns like gamification and AI-assisted coaching.
+LinguaCore is an elite, full-stack language learning ecosystem designed to transform the educational journey into a high-engagement experience. It features cutting-edge AI integrations, professional gamification, and a world-class "Cyber-Premium" design system.
 
-## ✨ Key Features
+## ✨ Elite Features
 
-- **📊 Personal Dashboard:** Track your XP, Daily Streaks, and overall progress in real-time.
-- **🔊 Interactive Audio (TTS):** Native pronunciation available across the Glossary and Lessons using browser-native Speech Synthesis.
-- **🤖 AI Writing Coach:** Get professional feedback on your writing including clarity scores and grammatical corrections.
-- **🎮 Gamified Learning:** Earn points (XP) by completing lessons and maintain streaks to build a consistent learning habit.
-- **⌨️ Fluid UX:** Intensive keyboard support (1-4 keys, Enter) for a lightning-fast learning experience.
-- **🛡️ Security-First:** Argon2 hashing, JWT sessions, Helmet headers, and Zod validation.
+- **🧠 Smart Hover Translation**: Instant English-to-Spanish translation on hover for any word or sentence in lessons, dashboard, and flashcards.
+- **🎙️ AI Speaking Recognition**: Real-time pronunciation evaluation with feedback scores based on neural speech processing.
+- **🤖 AI Chat Tutor**: A resident floating assistant available 24/7 to solve grammar doubts and practice natural conversation.
+- **🎨 Cyber-Premium UI**: Glassmorphism 2.0, dynamic light/dark modes, and fluid animations powered by Framer Motion.
+- **📊 Advanced Analytics**: GitHub-style activity heatmaps and visual "Learning Journey" maps to track progress.
+- **🏆 Professional Gamification**: XP rewards, global leaderboards, daily streaks, and downloadable digital certificates.
+- **🗂️ Interactive Flashcards**: Spaced repetition system with "Study Sprints", hints, and native audio.
+- **🤖 AI Writing Coach**: Detailed feedback on clarity, grammar, and professional tone.
+- **⌨️ Pro Keyboard Navigation**: Full control using `1-4`, `Space`, and `Enter` for distraction-free learning.
 
-## 📖 Documentation
-- [User Manual](docs/USER_MANUAL.md) - How to use the platform.
-- [Developer Manual](docs/DEV_MANUAL.md) - Architecture and extension guide.
+## 📖 Deep Documentation
+- [User Manual](docs/USER_MANUAL.md) - Mastery guide for students.
+- [Developer Manual](docs/DEV_MANUAL.md) - Architecture, AI hooks, and API specs.
 
-## 🚀 Quick Start (Windows)
+## 🚀 Speed Setup (Windows)
 
 ### Prerequisites
-- Node.js (v16.x or higher)
-- npm (v8.x or higher)
+- Node.js (v18.x+)
+- npm (v9.x+)
 
-### Installation & Setup
-1. **Clone the repository**
-2. **Run setup**:
-   ```powershell
-   cd backend
-   npm install
-   npm run prisma:push
-   npm run prisma:seed
-   
-   cd ../frontend
-   npm install
-   ```
+### Instant Launch
+Run the automated power-script in the root directory:
+```powershell
+./run.ps1
+```
+*This will automatically check dependencies, synchronize the database, and launch both the backend and frontend.*
 
-### Execution
-1. **Start Backend**: `cd backend; npm run dev`
-2. **Start Frontend**: `cd frontend; npm run dev`
+## 🏗️ World-Class Tech Stack
+- **Frontend:** React 18, Vite, TypeScript, Zustand (State), Framer Motion (UX), Lucide (Icons), Sonner (Toasts).
+- **Backend:** Node.js, Express, Prisma ORM, SQLite (Dev) / PostgreSQL (Prod).
+- **AI Modules:** Web Speech API (Recognition/TTS), Deterministic Fuzzy Matching.
 
----
-
-## 🏗️ Technical Architecture
-- **Backend:** Node.js, Express, Prisma, SQLite/PostgreSQL.
-- **Frontend:** React, Vite, TypeScript, Zustand, Framer Motion, Lucide Icons.
-- **Security:** OWASP Top 10 compliance, RBAC support.
-
-## 🧪 Testing
-- **Backend:** Integration tests with Jest and Supertest.
-- `cd backend; npm test`
+## 🛡️ Industrial-Grade Security
+- Security-by-design following OWASP guidelines.
+- Argon2id password hashing & JWT Stateless sessions.
+- Comprehensive request validation with Zod.
 
 ---
 
 ## 👩‍💻 Developed with ❤️ by Antigravity
-Building the future of personalized language education.
+*Crafting the future of human-AI collaboration in education.*
