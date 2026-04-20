@@ -6,6 +6,8 @@ interface User {
   name: string;
   role: string;
   level: string;
+  xp: number;
+  streak: number;
 }
 
 interface AuthState {

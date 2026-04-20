@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuthStore } from '../store/authStore';
-import { LogOut, User, BookOpen, LayoutDashboard, BookMarked } from 'lucide-react';
+import { LogOut, User, BookOpen, LayoutDashboard, BookMarked, Sparkles } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Navbar: React.FC = () => {
@@ -20,6 +20,12 @@ const Navbar: React.FC = () => {
       <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
         {user ? (
           <>
+            <Link to="/dashboard" style={{ color: 'var(--text-muted)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <LayoutDashboard size={20} /> Dashboard
+            </Link>
+            <Link to="/writing-coach" style={{ color: 'var(--text-muted)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Sparkles size={20} color="var(--primary)" /> AI Coach
+            </Link>
             <Link to="/glossary" style={{ color: 'var(--text-muted)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <BookMarked size={20} /> Glossary
             </Link>

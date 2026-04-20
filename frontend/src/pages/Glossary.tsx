@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import { motion } from 'framer-motion';
-import { Search, BookMarked, Layers, Tag as TagIcon } from 'lucide-react';
+import { Search, Layers, Volume2 } from 'lucide-react';
+import { useTTS } from '../hooks/useTTS';
 
 const Glossary: React.FC = () => {
   const [vocab, setVocab] = useState<any[]>([]);
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
+  const { speak } = useTTS();
 
   useEffect(() => {
     api.get('/vocabulary')
@@ -62,9 +64,17 @@ const Glossary: React.FC = () => {
             className="glass-card"
             style={{ padding: '2rem' }}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                <span style={{ fontSize: '1.5rem', fontWeight: '800', color: 'var(--primary)' }}>{item.word}</span>
-                <span style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)', fontSize: '0.7rem', padding: '0.2rem 0.6rem', borderRadius: '6px', fontWeight: 'bold' }}>{item.category}</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', alignItems: 'flex-start' }}>
+                <div>
+                    <span style={{ fontSize: '1.5rem', fontWeight: '800', color: 'var(--primary)', display: 'block' }}>{item.word}</span>
+                    <span style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)', fontSize: '0.7rem', padding: '0.2rem 0.6rem', borderRadius: '6px', fontWeight: 'bold' }}>{item.category}</span>
+                </div>
+                <button 
+                    onClick={() => speak(`${item.word}. ${item.example || ''}`)}
+                    style={{ background: 'rgba(99, 102, 241, 0.1)', border: 'none', borderRadius: '50%', width: '40px', height: '40px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)', cursor: 'pointer' }}
+                >
+                    <Volume2 size={20} />
+                </button>
             </div>
             <p style={{ marginBottom: '1.5rem', fontSize: '1.05rem' }}>{item.meaning}</p>
             {item.example && (

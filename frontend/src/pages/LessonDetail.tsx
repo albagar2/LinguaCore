@@ -1,15 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, CheckCircle, XCircle, Award, Sparkles, BookOpen, ChevronRight } from 'lucide-react';
+import { ArrowLeft, Award, BookOpen, ChevronRight, Volume2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useTTS } from '../hooks/useTTS';
 
 type ViewMode = 'theory' | 'practice';
 
 const LessonDetail: React.FC = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { speak } = useTTS();
+  
   const [lesson, setLesson] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [mode, setMode] = useState<ViewMode>('theory');
@@ -24,22 +27,14 @@ const LessonDetail: React.FC = () => {
         setLesson(res.data.data);
         setLoading(false);
       })
-      .catch((err) => {
+      .catch(() => {
         toast.error("Lesson not found or expired. Redirecting...");
         setTimeout(() => navigate('/lessons'), 2000);
         setLoading(false);
       });
-  }, [id]);
+  }, [id, navigate]);
 
-  if (loading) return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
-      <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }} style={{ border: '4px solid var(--border)', borderTop: '4px solid var(--primary)', borderRadius: '50%', width: '40px', height: '40px' }} />
-    </div>
-  );
-  
-  if (!lesson) return <div style={{ textAlign: 'center', marginTop: '4rem' }}><h2>Lesson not found</h2></div>;
-
-  const handleCheck = () => {
+  const handleCheck = useCallback(() => {
     const currentExercise = lesson.exercises[currentExerciseIndex];
     if (!selectedOption) return;
     
@@ -58,21 +53,68 @@ const LessonDetail: React.FC = () => {
       correct: isCorrect,
       message: isCorrect ? 'Great job!' : `Correct answer: ${currentExercise.correctAnswer}`
     });
-  };
+  }, [lesson, currentExerciseIndex, selectedOption]);
 
-  const nextStep = () => {
+  const nextStep = useCallback(() => {
     setFeedback(null);
     setSelectedOption(null);
     if (currentExerciseIndex < lesson.exercises.length - 1) {
       setCurrentExerciseIndex(prev => prev + 1);
     } else {
-      toast.success("Lesson Completed!", {
-        description: `Total XP: ${score + (feedback?.correct ? 10 : 0)}`,
-        icon: <Award size={20} color="var(--primary)" />
-      });
-      navigate('/lessons');
+        const finalScore = score + (feedback?.correct ? 10 : 0);
+        // Save progress to backend
+        api.post(`/lessons/${id}/complete`, { score: finalScore })
+            .then(() => {
+                toast.success("Lesson Completed!", {
+                    description: `Total XP earned: ${finalScore}`,
+                    icon: <Award size={20} color="var(--primary)" />
+                });
+                navigate('/dashboard');
+            })
+            .catch(() => {
+                toast.success("Lesson Completed!"); // Still show success even if XP save fails
+                navigate('/lessons');
+            });
     }
-  };
+  }, [id, currentExerciseIndex, lesson, score, feedback, navigate]);
+
+  // Keyboard Support
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+        if (mode === 'theory') {
+            if (e.key === 'Enter') setMode('practice');
+            return;
+        }
+
+        if (feedback) {
+            if (e.key === 'Enter') nextStep();
+            return;
+        }
+
+        if (lesson?.exercises[currentExerciseIndex]?.type === 'MULTIPLE_CHOICE') {
+            const num = parseInt(e.key);
+            const options = JSON.parse(lesson.exercises[currentExerciseIndex].options);
+            if (num > 0 && num <= options.length) {
+                setSelectedOption(options[num - 1]);
+            }
+        }
+
+        if (e.key === 'Enter' && selectedOption) {
+            handleCheck();
+        }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [mode, feedback, selectedOption, lesson, currentExerciseIndex, handleCheck, nextStep]);
+
+  if (loading) return (
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+      <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }} style={{ border: '4px solid var(--border)', borderTop: '4px solid var(--primary)', borderRadius: '50%', width: '40px', height: '40px' }} />
+    </div>
+  );
+  
+  if (!lesson) return <div style={{ textAlign: 'center', marginTop: '4rem' }}><h2>Lesson not found</h2></div>;
 
   const progressPercentage = mode === 'theory' ? 0 : ((currentExerciseIndex + 1) / lesson.exercises.length) * 100;
 
@@ -84,20 +126,8 @@ const LessonDetail: React.FC = () => {
           <ArrowLeft size={18} /> BACK
         </button>
         <div style={{ display: 'flex', gap: '1rem' }}>
-            <span style={{ 
-                background: mode === 'theory' ? 'var(--primary)' : 'rgba(255,255,255,0.05)', 
-                padding: '0.4rem 1rem', 
-                borderRadius: '10px', 
-                fontSize: '0.8rem', 
-                fontWeight: 'bold' 
-            }}>Theory</span>
-            <span style={{ 
-                background: mode === 'practice' ? 'var(--primary)' : 'rgba(255,255,255,0.05)', 
-                padding: '0.4rem 1rem', 
-                borderRadius: '10px', 
-                fontSize: '0.8rem', 
-                fontWeight: 'bold' 
-            }}>Practice</span>
+            <Tab active={mode === 'theory'} label="Theory" />
+            <Tab active={mode === 'practice'} label="Practice" />
         </div>
       </div>
 
@@ -117,10 +147,18 @@ const LessonDetail: React.FC = () => {
                 <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem' }}>Master the core concepts before practicing.</p>
             </div>
 
-            <div style={{ lineHeight: '1.8', fontSize: '1.1rem', color: '#d1d5db', marginBottom: '4rem', background: 'rgba(255,255,255,0.02)', padding: '2rem', borderRadius: '16px', border: '1px solid var(--border)' }}>
-                {lesson.content.split('\n').map((line: string, i: number) => (
-                    <p key={i} style={{ marginBottom: '1rem' }}>{line}</p>
-                ))}
+            <div style={{ position: 'relative', marginBottom: '4rem' }}>
+                <button 
+                    onClick={() => speak(lesson.content)}
+                    style={{ position: 'absolute', right: '1rem', top: '1rem', background: 'rgba(99, 102, 241, 0.1)', border: 'none', borderRadius: '50%', width: '45px', height: '45px', color: 'var(--primary)', cursor: 'pointer' }}
+                >
+                    <Volume2 size={24} />
+                </button>
+                <div style={{ lineHeight: '1.8', fontSize: '1.1rem', color: '#d1d5db', background: 'rgba(255,255,255,0.02)', padding: '2.5rem', borderRadius: '16px', border: '1px solid var(--border)' }}>
+                    {lesson.content.split('\n').map((line: string, i: number) => (
+                        <p key={i} style={{ marginBottom: '1rem' }}>{line}</p>
+                    ))}
+                </div>
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'center' }}>
@@ -132,6 +170,7 @@ const LessonDetail: React.FC = () => {
                     START PRACTICE <ChevronRight size={20} />
                 </button>
             </div>
+            <p style={{ textAlign: 'center', marginTop: '1.5rem', color: 'var(--text-muted)', fontSize: '0.8rem' }}>Tip: Press [Enter] to continue</p>
           </motion.div>
         ) : (
           <motion.div
@@ -157,7 +196,11 @@ const LessonDetail: React.FC = () => {
                     nextStep={nextStep}
                     index={currentExerciseIndex}
                     total={lesson.exercises.length}
+                    speak={speak}
                 />
+                <p style={{ marginTop: '2rem', color: 'var(--text-muted)', fontSize: '0.8rem', textAlign: 'center' }}>
+                    Tip: Use [1-4] keys for options, [Enter] to check
+                </p>
             </div>
           </motion.div>
         )}
@@ -166,17 +209,31 @@ const LessonDetail: React.FC = () => {
   );
 };
 
-const ExerciseRenderer = ({ exercise, feedback, selectedOption, setSelectedOption, handleCheck, nextStep, index, total }: any) => {
+const Tab = ({ active, label }: { active: boolean, label: string }) => (
+    <span style={{ 
+        background: active ? 'var(--primary)' : 'rgba(255,255,255,0.05)', 
+        padding: '0.4rem 1rem', 
+        borderRadius: '10px', 
+        fontSize: '0.8rem', 
+        fontWeight: 'bold',
+        transition: 'all 0.3s ease'
+    }}>{label}</span>
+)
+
+const ExerciseRenderer = ({ exercise, feedback, selectedOption, setSelectedOption, handleCheck, nextStep, index, total, speak }: any) => {
     return (
         <div>
-            <div style={{ marginBottom: '1rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                 <span style={{ color: 'var(--primary)', fontWeight: '900', fontSize: '0.8rem', letterSpacing: '2px' }}>EXERCISE {index + 1} / {total}</span>
+                <button onClick={() => speak(exercise.question)} style={{ background: 'none', color: 'var(--primary)', cursor: 'pointer' }}>
+                    <Volume2 size={20} />
+                </button>
             </div>
             <h2 style={{ fontSize: '2.2rem', marginBottom: '2.5rem' }}>{exercise.question}</h2>
 
             {exercise.type === 'MULTIPLE_CHOICE' && (
                 <div style={{ display: 'grid', gap: '1rem' }}>
-                    {JSON.parse(exercise.options).map((opt: string) => (
+                    {JSON.parse(exercise.options).map((opt: string, i: number) => (
                         <button 
                             key={opt}
                             onClick={() => !feedback && setSelectedOption(opt)}
@@ -188,10 +245,13 @@ const ExerciseRenderer = ({ exercise, feedback, selectedOption, setSelectedOptio
                                 background: selectedOption === opt ? 'rgba(99, 102, 241, 0.1)' : 'rgba(255,255,255,0.03)',
                                 border: `2px solid ${selectedOption === opt ? 'var(--primary)' : 'var(--border)'}`,
                                 color: 'white',
-                                fontSize: '1.1rem'
+                                fontSize: '1.1rem',
+                                display: 'flex',
+                                justifyContent: 'space-between'
                             }}
                         >
-                            {opt}
+                            <span>{opt}</span>
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>[{i + 1}]</span>
                         </button>
                     ))}
                 </div>
@@ -200,6 +260,7 @@ const ExerciseRenderer = ({ exercise, feedback, selectedOption, setSelectedOptio
             {exercise.type === 'FILL_BLANKS' && (
                 <input 
                     type="text"
+                    autoFocus
                     placeholder="Enter answer..."
                     value={selectedOption || ''}
                     onChange={(e) => !feedback && setSelectedOption(e.target.value)}
@@ -219,7 +280,7 @@ const ExerciseRenderer = ({ exercise, feedback, selectedOption, setSelectedOptio
             )}
 
             {feedback && (
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ marginTop: '2.5rem', padding: '1.5rem', borderRadius: '12px', background: feedback.correct ? 'rgba(16,185,129,0.1)' : 'rgba(244,63,94,0.1)', color: feedback.correct ? 'var(--accent)' : 'var(--danger)' }}>
+                <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} style={{ marginTop: '2.5rem', padding: '1.5rem', borderRadius: '12px', background: feedback.correct ? 'rgba(16,185,129,0.1)' : 'rgba(244,63,94,0.1)', color: feedback.correct ? 'var(--accent)' : 'var(--danger)' }}>
                     <strong>{feedback.correct ? 'Correct!' : 'Correction:'}</strong>
                     <p style={{ marginTop: '0.5rem', color: 'white' }}>{exercise.explanation}</p>
                 </motion.div>
