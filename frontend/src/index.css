@@ -10,7 +10,7 @@
   
   /* Dark Theme */
   --bg: #020617;
-  --card-bg: rgba(15, 23, 42, 0.6);
+  --card-bg: rgba(15, 23, 42, 0.4);
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   --border: rgba(255, 255, 255, 0.08);
@@ -21,7 +21,7 @@
 
 body.light-theme {
   --bg: #f8fafc;
-  --card-bg: rgba(255, 255, 255, 0.7);
+  --card-bg: rgba(255, 255, 255, 0.6);
   --text-main: #0f172a;
   --text-muted: #64748b;
   --border: rgba(0, 0, 0, 0.06);
@@ -38,108 +38,109 @@ body.light-theme {
 body {
   background-color: var(--bg);
   background-image: 
-    radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
-    radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.1) 0%, transparent 40%);
+    radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 45%),
+    radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.08) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.03) 0%, transparent 50%);
+  background-attachment: fixed;
   color: var(--text-main);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   min-height: 100vh;
   overflow-x: hidden;
-  transition: background-color 0.6s ease, color 0.6s ease;
+  transition: background-color 0.8s ease, color 0.8s ease;
 }
 
 /* Typography Enhancements */
 h1, h2, h3, h4 {
   letter-spacing: -0.04em;
   font-weight: 800;
+  line-height: 1.1;
 }
 
 /* Premium Buttons */
-button {
+button, .btn-primary {
   cursor: pointer;
   border: none;
   outline: none;
   transition: var(--transition);
-  border-radius: 16px;
+  border-radius: 18px;
   font-weight: 700;
   letter-spacing: -0.01em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
 }
 
 .btn-primary {
   background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-  color: white;
-  padding: 1rem 2rem;
-  box-shadow: 0 10px 25px -5px var(--primary-glow);
+  color: white !important;
+  padding: 1.1rem 2.2rem;
+  box-shadow: 0 15px 30px -10px var(--primary-glow);
   position: relative;
   overflow: hidden;
+  z-index: 1;
 }
 
-.btn-primary::after {
-  content: '';
-  position: absolute;
-  top: 0; left: -100%;
-  width: 100%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-  transition: 0.5s;
+.btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: -1;
 }
 
-.btn-primary:hover::after {
-  left: 100%;
+.btn-primary:hover::before {
+    opacity: 1;
 }
 
 .btn-primary:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 20px 40px -10px var(--primary-glow);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 25px 50px -15px var(--primary-glow);
 }
 
 /* Premium Glassmorphism */
 .glass-card {
   background: var(--card-bg);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(30px) saturate(190%);
+  -webkit-backdrop-filter: blur(30px) saturate(190%);
   border: 1px solid var(--border);
   border-top: 1px solid var(--glass-shine);
   border-left: 1px solid var(--glass-shine);
-  border-radius: 32px;
+  border-radius: 40px;
   padding: 3rem;
   box-shadow: 
     0 10px 15px -3px rgba(0, 0, 0, 0.1),
     0 4px 6px -2px rgba(0, 0, 0, 0.05);
   transition: var(--transition);
+  position: relative;
+  overflow: hidden;
 }
 
 body:not(.light-theme) .glass-card {
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.6);
 }
 
 .glass-card:hover {
   border-color: rgba(99, 102, 241, 0.4);
-  transform: translateY(-8px) scale(1.01);
-  box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.6);
+  transform: translateY(-10px);
+  box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.7);
 }
 
 /* Gradient Text 2.0 */
 .gradient-text {
-  background: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+  background: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #f472b6 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
 }
 
-/* Animated Background Shapes */
-.bg-shape {
-  position: fixed;
-  z-index: -1;
-  filter: blur(100px);
-  border-radius: 50%;
-  pointer-events: none;
-  opacity: 0.4;
-}
-
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 12px;
 }
 ::-webkit-scrollbar-track {
   background: var(--bg);
@@ -147,29 +148,65 @@ body:not(.light-theme) .glass-card {
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(var(--bg), var(--primary), var(--bg));
   border-radius: 20px;
-  border: 3px solid var(--bg);
+  border: 4px solid var(--bg);
 }
 
 /* Global Container */
 .container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 4rem;
 }
 
-/* Layout Utilities */
-.flex-center {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
+/* Animations */
 @keyframes float {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-    100% { transform: translateY(0px); }
+    0% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(1deg); }
+    100% { transform: translateY(0px) rotate(0deg); }
 }
 
 .float-animation {
-    animation: float 4s ease-in-out infinite;
+    animation: float 6s ease-in-out infinite;
+}
+
+.shine-effect {
+    position: relative;
+    overflow: hidden;
+}
+
+.shine-effect::after {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+    transform: rotate(45deg);
+    transition: 0.8s;
+    pointer-events: none;
+}
+
+.shine-effect:hover::after {
+    left: 150%;
+}
+
+/* Form Controls */
+input, select, textarea {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1rem 1.5rem;
+    color: var(--text-main);
+    transition: var(--transition);
+    outline: none;
+}
+
+input:focus {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+}
+
+@media (max-width: 768px) {
+    .container { padding: 0 1.5rem; }
+    .glass-card { padding: 2rem; border-radius: 24px; }
 }

@@ -55,3 +55,18 @@ export const login = async (data: any) => {
     },
   };
 };
+
+export const getLeaderboard = async () => {
+  return await prisma.user.findMany({
+    take: 10,
+    orderBy: {
+      xp: 'desc',
+    },
+    select: {
+      id: true,
+      name: true,
+      xp: true,
+      level: true,
+    },
+  });
+};

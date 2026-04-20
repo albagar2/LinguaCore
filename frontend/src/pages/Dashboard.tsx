@@ -15,17 +15,22 @@ import SmartText from '../components/SmartText';
 const Dashboard: React.FC = () => {
   const { user } = useAuthStore();
   const [stats, setStats] = useState<any>(null);
+  const [leaderboard, setLeaderboard] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get('/lessons')
-      .then(res => {
+    Promise.all([
+      api.get('/lessons'),
+      api.get('/auth/leaderboard')
+    ])
+    .then(([lessonsRes, leaderboardRes]) => {
         setStats({
-          lessons: res.data.data.slice(0, 3)
+          lessons: lessonsRes.data.data.slice(0, 3)
         });
+        setLeaderboard(leaderboardRes.data.data);
         setLoading(false);
-      })
-      .catch(() => setLoading(false));
+    })
+    .catch(() => setLoading(false));
   }, []);
 
   const handleDownloadCertificate = () => {
@@ -175,10 +180,16 @@ const Dashboard: React.FC = () => {
                     <Users size={20} color="#f59e0b" /> Leaderboard
                 </h3>
                 <div style={{ display: 'grid', gap: '1rem' }}>
-                    <LeaderboardItem rank={1} name="Alex River" xp={4250} isUser={false} />
-                    <LeaderboardItem rank={2} name="Sarah Chen" xp={3800} isUser={false} />
-                    <LeaderboardItem rank={3} name={user?.name || 'You'} xp={user?.xp || 0} isUser={true} />
-                    <LeaderboardItem rank={4} name="Micky Doe" xp={1200} isUser={false} />
+                    {leaderboard.map((item, index) => (
+                        <LeaderboardItem 
+                            key={item.id} 
+                            rank={index + 1} 
+                            name={item.name} 
+                            xp={item.xp} 
+                            isUser={item.id === user?.id} 
+                        />
+                    ))}
+                    {leaderboard.length === 0 && <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Calculating global rankings...</p>}
                 </div>
             </div>
         </aside>

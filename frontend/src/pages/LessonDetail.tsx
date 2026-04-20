@@ -9,6 +9,7 @@ import {
 import { toast } from 'sonner';
 import { useTTS } from '../hooks/useTTS';
 import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
+import { useAuthStore } from '../store/authStore';
 import SmartText from '../components/SmartText';
 
 type ViewMode = 'theory' | 'practice';
@@ -18,6 +19,7 @@ const LessonDetail: React.FC = () => {
   const navigate = useNavigate();
   const { speak } = useTTS();
   const { isListening, transcript, startListening, stopListening, error } = useSpeechRecognition();
+  const { updateUser } = useAuthStore();
   
   const [lesson, setLesson] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -87,7 +89,8 @@ const LessonDetail: React.FC = () => {
     } else {
         const finalScore = score + (feedback?.correct ? 10 : 0);
         api.post(`/lessons/${id}/complete`, { score: finalScore })
-            .then(() => {
+            .then((res) => {
+                updateUser({ xp: res.data.data.xp, streak: res.data.data.streak });
                 toast.success("Lesson Completed!", {
                     description: `Total XP earned: ${finalScore}`,
                     icon: <Award size={20} color="var(--primary)" />

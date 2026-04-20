@@ -59,12 +59,33 @@ const Flashcards: React.FC = () => {
           <ArrowLeft size={18} /> GLOSSARY
         </Link>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            <span style={{ fontSize: '0.9rem', color: 'var(--primary)', fontWeight: 'bold' }}>{mastered} MASTERED</span>
-            <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', background: 'var(--glass)', padding: '0.4rem 1rem', borderRadius: '30px' }}>{Math.min(currentIndex + 1, words.length)} / {words.length}</span>
+            <div style={{ textAlign: 'right' }}>
+                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '0.25rem' }}>Mastery Progress</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <div style={{ width: '150px', height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', overflow: 'hidden' }}>
+                        <motion.div 
+                            animate={{ width: `${(currentIndex / words.length) * 100}%` }}
+                            style={{ height: '100%', background: 'var(--primary)' }}
+                        />
+                    </div>
+                    <span style={{ fontSize: '0.9rem', fontWeight: '800', color: 'var(--text-main)' }}>{Math.min(currentIndex + 1, words.length)}/{words.length}</span>
+                </div>
+            </div>
+            <div style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--accent)', padding: '0.6rem 1.2rem', borderRadius: '14px', border: '1px solid rgba(16, 185, 129, 0.2)', fontWeight: 'bold' }}>
+                {mastered} MASTERED
+            </div>
         </div>
       </header>
 
-      <div style={{ position: 'relative', height: '450px', perspective: '2000px' }}>
+      <div style={{ position: 'relative', height: '480px', perspective: '2000px' }}>
+        {/* Visual Stack Decoration */}
+        {!isFinished && currentIndex < words.length - 1 && (
+            <div style={{ position: 'absolute', top: '15px', right: '-10px', left: '10px', bottom: '-15px', background: 'rgba(255,255,255,0.02)', borderRadius: '40px', border: '1px solid var(--border)', zIndex: -1 }} />
+        )}
+        {!isFinished && currentIndex < words.length - 2 && (
+            <div style={{ position: 'absolute', top: '25px', right: '-20px', left: '20px', bottom: '-25px', background: 'rgba(255,255,255,0.01)', borderRadius: '40px', border: '1px solid var(--border)', zIndex: -2 }} />
+        )}
+
         <AnimatePresence mode="wait">
             {!isFinished ? (
                 <motion.div

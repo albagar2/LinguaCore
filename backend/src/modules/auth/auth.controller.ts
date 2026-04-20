@@ -21,3 +21,12 @@ export const login = async (req: Request, res: Response, next: NextFunction) => 
     next(error);
   }
 };
+
+export const getLeaderboard = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const users = await authService.getLeaderboard();
+    res.status(200).json({ status: 'success', data: users });
+  } catch (error) {
+    next(error);
+  }
+};

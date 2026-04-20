@@ -15,6 +15,7 @@ interface AuthState {
   user: User | null;
   token: string | null;
   setAuth: (user: User, token: string) => void;
+  updateUser: (updates: Partial<User>) => void;
   logout: () => void;
 }
 
@@ -25,6 +26,13 @@ export const useAuthStore = create<AuthState>((set) => ({
     localStorage.setItem('user', JSON.stringify(user));
     localStorage.setItem('token', token);
     set({ user, token });
+  },
+  updateUser: (updates) => {
+    set((state) => {
+      const newUser = state.user ? { ...state.user, ...updates } : null;
+      if (newUser) localStorage.setItem('user', JSON.stringify(newUser));
+      return { user: newUser };
+    });
   },
   logout: () => {
     localStorage.removeItem('user');
