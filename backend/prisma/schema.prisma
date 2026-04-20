@@ -20,6 +20,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   progress  Progress[]
+  flashcardProgress FlashcardProgress[]
+  achievements      UserAchievement[]
 }
 
 model Lesson {
@@ -67,5 +69,39 @@ model Vocabulary {
   example     String?
   level       String   // BEGINNER, INTERMEDIATE, ADVANCED
   category    String   // NOUN, VERB, IDIOM, PHRASAL_VERB
+  flashcardProgress FlashcardProgress[]
   createdAt   DateTime @default(now())
+}
+
+model FlashcardProgress {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  vocabId     String
+  vocabulary  Vocabulary @relation(fields: [vocabId], references: [id])
+  mastery     Float    @default(0) // 0 to 1
+  interval    Int      @default(0) // days
+  nextReview  DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@unique([userId, vocabId])
+}
+
+model Achievement {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  icon        String
+  category    String   // STREAK, XP, LESSONS
+  requirement Int
+  users       UserAchievement[]
+}
+
+model UserAchievement {
+  id            String      @id @default(uuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id])
+  achievementId String
+  achievement   Achievement @relation(fields: [achievementId], references: [id])
+  earnedAt      DateTime    @default(now())
+  @@unique([userId, achievementId])
 }

@@ -24,9 +24,18 @@ This guide covers the advanced technical patterns, AI integrations, and state ma
 - **Integration**: Currently has a simulated LLM response logic. To connect to OpenAI:
     - Route requests through the backend `/api/ai/chat` to keep API keys secure.
 
-### 4. Persistence & Gamification
-- **Auth Store**: Manages `xp`, `streak`, and `level` entirely through Zustand.
-- **DB Sync**: The `/lessons/:id/complete` endpoint in the backend is responsible for atomic XP increments and streak calculation.
+### 4. Spaced Repetition Engine (SRS)
+- **Logic**: Implements a modified SuperMemo-2 algorithm.
+- **Model**: `FlashcardProgress` tracks `interval`, `mastery`, and `nextReview`.
+- **API**: `POST /api/vocabulary/mastery` updates memory records based on user feedback.
+
+### 5. Analytics Aggregator
+- **Implementation**: `progress.routes.ts` aggregates XP history and categorical accuracy.
+- **Mastery Tracker**: Uses Prisma `_count` and `_avg` to calculate performance per study module (Grammar, Listening, etc.).
+
+### 6. Gamification Architecture
+- **Auth Store**: Manages `xp`, `streak`, and `level` with real-time state updates via `updateUser`.
+- **Sync**: Backend atomic updates ensure consistent leaderboard state across the distributed ecosystem.
 
 ## 🎨 Design System & Theming
 - **Store**: `themeStore.ts` toggles a `.light-theme` class on `document.body`.

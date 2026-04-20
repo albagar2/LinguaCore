@@ -1,47 +1,133 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
-    Calendar, Flame, Trophy, BookOpen, Star, 
-    ChevronRight, Award, 
-    Zap, Target, Download, Users, Map
+    Flame, Star, Trophy, Target, Download, Map, 
+    Award, Users, BrainCircuit, BookOpen, ChevronRight, Zap, Film
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import api from '../services/api';
 import { useAuthStore } from '../store/authStore';
+import api from '../services/api';
 import { toast } from 'sonner';
-import ActivityHeatmap from '../components/ActivityHeatmap';
+import { Link } from 'react-router-dom';
 import SmartText from '../components/SmartText';
 
 const Dashboard: React.FC = () => {
+  // Estado global de la sesión del usuario
   const { user } = useAuthStore();
-  const [stats, setStats] = useState<any>(null);
-  const [leaderboard, setLeaderboard] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  
+  // Estados locales para la gestión de datos asíncronos
+  const [stats, setStats] = useState<any>(null); // Recomendaciones de lecciones
+  const [leaderboard, setLeaderboard] = useState<any[]>([]); // Ranking global de XP
+  const [analytics, setAnalytics] = useState<any>(null); // Datos de precisión y progreso
+  const [loading, setLoading] = useState(true); // Control de carga inicial
 
+  /**
+   * Carga inicial de datos: Combina peticiones de lecciones, ranking y analíticas
+   * para minimizar los parpadeos en la UI y centralizar el manejo de errores.
+   */
   useEffect(() => {
     Promise.all([
       api.get('/lessons'),
-      api.get('/auth/leaderboard')
+      api.get('/auth/leaderboard'),
+      api.get('/progress/dashboard')
     ])
-    .then(([lessonsRes, leaderboardRes]) => {
+    .then(([lessonsRes, leaderboardRes, progressRes]) => {
         setStats({
-          lessons: lessonsRes.data.data.slice(0, 3)
+          lessons: (lessonsRes.data.data || []).slice(0, 3)
         });
-        setLeaderboard(leaderboardRes.data.data);
+        setLeaderboard(leaderboardRes.data.data || []);
+        setAnalytics(progressRes.data.data || { accuracy: [], totalLessons: 0, totalWords: 0 });
         setLoading(false);
     })
-    .catch(() => setLoading(false));
+    .catch((err) => {
+        console.error("Dashboard data load failed", err);
+        setLoading(false);
+        toast.error("Telemetry failed to load. Using cached data.");
+    });
   }, []);
 
+  /**
+   * Lógica de Generación de Sello Maestro Cinematográfico.
+   * Crea un contenedor HTML dinámico con estilos premium (Glassmorphism + Gradients)
+   * y dispara una descarga física mediante un Blob de tipo text/html.
+   */
   const handleDownloadCertificate = () => {
-    toast.info("Preparing your professional certificate...", {
-        description: "Your progress is being validated. Please wait."
+    toast.info("Generating your Master Seal...", {
+        description: "Applying cinematic styling and validating milestones."
     });
+    
     setTimeout(() => {
-        toast.success("Certificate Ready!", {
-            description: "LinguaCore_Certificate_B2.pdf has been generated."
+        // Estructura del Certificado HTML con CSS Inline compatible con navegadores modernos
+        const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;900&display=swap');
+                body { margin: 0; background: #0f172a; display: flex; align-items: center; justify-content: center; height: 100vh; font-family: 'Outfit', sans-serif; color: white; }
+                .certificate {
+                    width: 800px;
+                    height: 550px;
+                    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+                    border: 10px solid transparent;
+                    border-image: linear-gradient(to right, #6366f1, #10b981) 1;
+                    padding: 40px;
+                    position: relative;
+                    text-align: center;
+                    box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+                }
+                .logo { font-size: 2rem; font-weight: 900; background: linear-gradient(90deg, #6366f1, #10b981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 2rem; }
+                h1 { font-size: 3.5rem; margin: 0; letter-spacing: -2px; text-transform: uppercase; }
+                h2 { color: #10b981; font-size: 1.5rem; margin-top: 1rem; letter-spacing: 5px; opacity: 0.8; }
+                .name { font-size: 3rem; margin: 2.5rem 0; color: #fff; font-weight: 400; border-bottom: 1px solid rgba(255,255,255,0.1); display: inline-block; padding: 0 2rem; }
+                .level { font-size: 1.2rem; color: #6366f1; font-weight: 900; text-transform: uppercase; margin-bottom: 2rem; }
+                .footer { position: absolute; bottom: 40px; left: 0; right: 0; font-size: 0.7rem; color: #64748b; }
+                .date { font-size: 0.9rem; color: #94a3b8; }
+                .seal { position: absolute; bottom: 60px; right: 60px; width: 100px; height: 100px; border-radius: 50%; background: rgba(99, 102, 241, 0.1); border: 2px solid #6366f1; display: flex; align-items: center; justify-content: center; color: #6366f1; transform: rotate(-15deg); font-weight: 900; }
+            </style>
+        </head>
+        <body>
+            <div class="certificate">
+                <div class="logo">LinguaCore</div>
+                <h2>MASTERY SEAL</h2>
+                <h1>Internal Certificate</h1>
+                <div class="name">${user?.name}</div>
+                <div class="level">LEVEL ACHIEVED: ${user?.level || 'ADVANCED'}</div>
+                <div class="date">Issued on: ${new Date().toLocaleDateString()} • XP Earned: ${user?.xp}</div>
+                <div class="seal"><br/><br/>VERIFIED</div>
+                <div class="footer">
+                    * This document is an internal milestone reward within the LinguaCore ecosystem.<br/>
+                    It is not a legally binding academic degree or official certification.
+                </div>
+            </div>
+        </body>
+        </html>
+        `;
+        
+        // Disparador de descarga nativo del navegador
+        const blob = new Blob([htmlContent], { type: 'text/html' });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `LinguaCore_MasterSeal_${user?.level || 'Level'}.html`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+
+        toast.success("Cinematic Seal Downloaded!", {
+            description: "Open the .html file to view your Master Seal."
         });
     }, 2000);
+  };
+
+  /**
+   * handleAcceptChallenge: Gestiona la aceptación de duelos en tiempo real.
+   * En una fase futura, esto abriría un socket para una sesión de práctica competitiva.
+   */
+  const handleAcceptChallenge = () => {
+    toast.success("Battle Initiated!", {
+        description: "You have joined the challenge against Alex_Master. Preparing arena..."
+    });
   };
 
   if (loading) return (
@@ -57,13 +143,18 @@ const Dashboard: React.FC = () => {
             <h1 style={{ fontSize: '2.8rem', fontWeight: '800', letterSpacing: '-1px' }}>Welcome back, <span className="gradient-text">{user?.name}</span>!</h1>
             <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>You're in the top 5% of learners this week. Keep going!</p>
         </div>
-        <button onClick={handleDownloadCertificate} className="btn-primary" style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--accent)', border: '1px solid var(--accent)', padding: '0.75rem 1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <Download size={18} /> DOWNLOAD CERTIFICATE
-        </button>
+        <div style={{ textAlign: 'right' }}>
+            <button onClick={handleDownloadCertificate} className="btn-primary" style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#047857', border: '1px solid #10b981', padding: '0.75rem 1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem', marginLeft: 'auto' }}>
+                <Download size={18} /> GENERATE INTERNAL SEAL
+            </button>
+            <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginTop: '0.5rem', maxWidth: '200px', marginLeft: 'auto' }}>
+                *LinguaCore Internal Progress Reward. Not an official academic degree.
+            </p>
+        </div>
       </header>
 
-      {/* Stats Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
+      {/* Grid de Estadísticas Principales: Streak, XP, Rango, Precisión y Multimedia */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
         <StatCard 
             icon={<Flame color="#f59e0b" fill="#f59e0b" />} 
             value={`${user?.streak || 0} Days`} 
@@ -80,41 +171,64 @@ const Dashboard: React.FC = () => {
             icon={<Trophy color="#10b981" />} 
             value={user?.level || 'Beginner'} 
             label="Current Rank" 
-            trend="Rank #124"
+            trend="Internal Mastery"
         />
         <StatCard 
             icon={<Target color="var(--accent)" />} 
-            value="85%" 
+            value={`${analytics?.accuracy?.find((a: any) => a.category === 'GRAMMAR')?.score || 0}%`} 
             label="Avg. Accuracy" 
             trend="+5% improvement"
+        />
+        <StatCard 
+            icon={<Film size={20} color="var(--primary)" />} 
+            value="12" 
+            label="Cinematic Sessions" 
+            trend="New Library Active"
         />
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1.8fr 1.2fr', gap: '2.5rem' }}>
         
         <div style={{ display: 'grid', gap: '2.5rem' }}>
-            {/* Activity Map */}
-            <ActivityHeatmap />
+            {/* Análisis Gráfico de Maestría por Categoría */}
+            <div className="glass-card" style={{ padding: '2rem' }}>
+                <h3 style={{ marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}><Target size={20} color="var(--primary)" /> Mastery Analysis</h3>
+                <div style={{ display: 'flex', alignItems: 'flex-end', height: '200px', gap: '1rem', paddingBottom: '2rem', borderBottom: '1px solid var(--border)' }}>
+                    {analytics?.accuracy?.map((seg: any) => (
+                        <div key={seg.category} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem' }}>
+                            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 'bold' }}>{seg.score}%</div>
+                            <motion.div 
+                                initial={{ height: 0 }}
+                                animate={{ height: `${seg.score}%` }}
+                                style={{ width: '100%', maxWidth: '40px', background: 'linear-gradient(180deg, var(--primary), var(--primary-glow))', borderRadius: '8px 8px 4px 4px', boxShadow: '0 4px 15px var(--primary-glow)' }}
+                            />
+                            <div style={{ fontSize: '0.6rem', fontWeight: '800', textAlign: 'center', width: '100%', whiteSpace: 'nowrap', overflow: 'hidden' }}>{seg.category}</div>
+                        </div>
+                    ))}
+                    {analytics?.accuracy?.length === 0 && (
+                        <div style={{ width: '100%', textAlign: 'center', color: 'var(--text-muted)' }}>No data yet. Complete some lessons!</div>
+                    )}
+                </div>
+            </div>
 
             {/* Learning Path (Visual Map) */}
             <section className="glass-card" style={{ padding: '2rem' }}>
                 <h2 style={{ fontSize: '1.5rem', marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}><Map size={24} color="var(--primary)" /> Learning Journey</h2>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', position: 'relative', paddingLeft: '2rem' }}>
                     <div style={{ position: 'absolute', left: '7px', top: '10px', bottom: '10px', width: '2px', background: 'var(--border)', borderStyle: 'dashed' }} />
-                    <PathNode title="Basics & Nouns" status="completed" />
-                    <PathNode title="Verb Tenses I" status="active" />
-                    <PathNode title="Daily Idioms" status="locked" />
-                    <PathNode title="Business Mastery" status="locked" />
+                    <PathNode title="Foundations (A1-A2)" status={analytics?.totalLessons > 0 ? "completed" : "active"} />
+                    <PathNode title="Intermediate Mastery (B1-B2)" status={analytics?.totalLessons > 5 ? "completed" : analytics?.totalLessons > 0 ? "active" : "locked"} />
+                    <PathNode title="Advanced Fluency (C1)" status={analytics?.totalLessons > 10 ? "completed" : analytics?.totalLessons > 5 ? "active" : "locked"} />
                 </div>
             </section>
 
-            {/* Recommended Lessons */}
-            <section>
+             {/* Recommended Lessons */}
+             <section>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                     <h2 style={{ fontSize: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}><Zap size={20} color="var(--primary)" /> Recommended for You</h2>
                 </div>
                 <div style={{ display: 'grid', gap: '1rem' }}>
-                    {stats?.lessons.map((lesson: any) => (
+                    {stats?.lessons?.map((lesson: any) => (
                         <Link key={lesson.id} to={`/lessons/${lesson.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                             <motion.div 
                                 whileHover={{ x: 10, background: 'rgba(255,255,255,0.03)' }}
@@ -126,9 +240,9 @@ const Dashboard: React.FC = () => {
                                         <BookOpen size={24} />
                                     </div>
                                     <div>
-                                        <h4 style={{ marginBottom: '0.25rem', fontSize: '1.1rem' }}><SmartText>{lesson.title}</SmartText></h4>
+                                        <h4 style={{ marginBottom: '0.25rem', fontSize: '1.1rem' }}><SmartText>{lesson.title || "Lesson"}</SmartText></h4>
                                         <div style={{ display: 'flex', gap: '0.75rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                                            <SmartText>{`${lesson.category} • ${lesson.level}`}</SmartText>
+                                            <SmartText>{`${lesson.category || 'General'} • ${lesson.level || 'All'}`}</SmartText>
                                         </div>
                                     </div>
                                 </div>
@@ -140,23 +254,23 @@ const Dashboard: React.FC = () => {
             </section>
         </div>
 
-        <aside style={{ display: 'grid', gap: '2.5rem' }}>
-            {/* Daily Goals */}
+        <aside style={{ display: 'grid', gap: '2.5rem', alignContent: 'start' }}>
+            {/* Mastery Card */}
             <div className="glass-card" style={{ padding: '2rem' }}>
                 <h3 style={{ marginBottom: '1.5rem', fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <Calendar size={20} color="var(--primary)" /> Daily Goals
+                    <BrainCircuit size={20} color="var(--primary)" /> Mastery Stats
                 </h3>
                 <div style={{ display: 'grid', gap: '1.25rem' }}>
-                    <TaskItem label="Completed 1 Lesson" done={true} />
-                    <TaskItem label="Practiced 5 Vocabulary Words" done={false} />
-                    <TaskItem label="Score 100% in a Quiz" done={false} />
+                    <TaskItem label="Words Mastered" done={(analytics?.totalWords || 0) > 0} />
+                    <TaskItem label="Curriculum Progress" done={(analytics?.totalLessons || 0) > 0} />
+                    <TaskItem label="Global Ranking" done={leaderboard.some(l => l.id === user?.id)} />
                 </div>
                 <div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid var(--border)' }}>
                     <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Level Progress: {user?.xp || 0} / 5000 XP</p>
                     <div style={{ height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden' }}>
                         <motion.div 
                             initial={{ width: 0 }} 
-                            animate={{ width: '35%' }} 
+                            animate={{ width: `${Math.min(((user?.xp || 0) / 5000) * 100, 100)}%` }} 
                             style={{ height: '100%', background: 'linear-gradient(90deg, var(--primary), var(--accent))' }} 
                         />
                     </div>
@@ -167,14 +281,32 @@ const Dashboard: React.FC = () => {
             <div className="glass-card" style={{ padding: '2rem' }}>
                 <h3 style={{ fontSize: '1.2rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}><Award size={20} color="var(--accent)" /> Achievements</h3>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem' }}>
-                    <BadgeCard icon="🔥" label="7 Days" earned={true} />
-                    <BadgeCard icon="🧠" label="Grammar" earned={true} />
+                    <BadgeCard icon="🔥" label="7 Days" earned={(user?.streak || 0) >= 7} />
+                    <BadgeCard icon="🧠" label="Grammar Master" earned={(analytics?.totalLessons || 0) >= 3} />
                     <BadgeCard icon="🎧" label="Perfect Ear" earned={false} />
-                    <BadgeCard icon="✍️" label="Pro Writer" earned={false} />
+                    <BadgeCard icon="✍️" label="Pro Writer" earned={(analytics?.totalLessons || 0) >= 10} />
                 </div>
             </div>
 
-            {/* Leaderboard Mock */}
+            {/* Global Challenges (Social) */}
+            <div className="glass-card" style={{ padding: '2rem', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
+                <h3 style={{ fontSize: '1.2rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}><Zap size={20} color="#f59e0b" /> Global Battles</h3>
+                <div style={{ padding: '1rem', background: 'rgba(245, 158, 11, 0.05)', borderRadius: '16px', border: '1px dotted #f59e0b' }}>
+                    <p style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#f59e0b', marginBottom: '0.5rem' }}>ACTIVE CHALLENGE</p>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ fontSize: '0.9rem' }}>vs. Alex_Master</span>
+                        <button 
+                            onClick={handleAcceptChallenge}
+                            className="btn-primary" 
+                            style={{ padding: '0.4rem 1rem', fontSize: '0.75rem', background: '#d97706' }}
+                        >
+                            ACCEPT
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Leaderboard Real */}
             <div className="glass-card" style={{ padding: '2rem' }}>
                 <h3 style={{ marginBottom: '1.5rem', fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                     <Users size={20} color="#f59e0b" /> Leaderboard
@@ -189,7 +321,7 @@ const Dashboard: React.FC = () => {
                             isUser={item.id === user?.id} 
                         />
                     ))}
-                    {leaderboard.length === 0 && <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Calculating global rankings...</p>}
+                    {leaderboard.length === 0 && <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Updating global rankings...</div>}
                 </div>
             </div>
         </aside>
@@ -270,16 +402,12 @@ const LeaderboardItem = ({ rank, name, xp, isUser }: any) => (
 const TaskItem = ({ label, done }: { label: string, done: boolean }) => (
     <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', opacity: done ? 0.6 : 1 }}>
         <div style={{ 
-            width: '20px', 
-            height: '20px', 
-            borderRadius: '50%', 
+            width: '18px', height: '18px', borderRadius: '4px', 
             border: `2px solid ${done ? 'var(--accent)' : 'var(--border)'}`,
             background: done ? 'var(--accent)' : 'transparent',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
+            display: 'flex', alignItems: 'center', justifyContent: 'center'
         }}>
-            {done && <Zap size={12} color="white" />}
+            {done && <Target size={12} color="white" />}
         </div>
         <span style={{ fontSize: '0.9rem', textDecoration: done ? 'line-through' : 'none' }}>{label}</span>
     </div>

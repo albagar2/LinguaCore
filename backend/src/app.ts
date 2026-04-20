@@ -7,6 +7,7 @@ import authRoutes from './modules/auth/auth.routes';
 import lessonRoutes from './modules/lessons/lessons.routes';
 import vocabularyRoutes from './modules/vocabulary/vocabulary.routes';
 import docsRoutes from './modules/docs/docs.routes';
+import progressRoutes from './modules/progress/progress.routes';
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/lessons', lessonRoutes);
 app.use('/api/vocabulary', vocabularyRoutes);
 app.use('/api/docs', docsRoutes);
+app.use('/api/progress', progressRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

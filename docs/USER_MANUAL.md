@@ -17,11 +17,23 @@ Every lesson is designed for maximum retention:
 - **AI Speaking Mode**: Practice your pronunciation using our voice recognition system. Hold the microphone button and speak; the AI will score your accuracy in real-time.
 - **Audio Feedback**: Use the `[Space]` key to repeat the native pronunciation of any exercise or theory block.
 
-### 3. Study Sprints (Flashcards)
-Master new vocabulary using our spaced repetition engine:
+### 3. Smart Memory (SRS) & Study Sprints
+LinguaCore uses a **Spaced Repetition System (SRS)**:
+- **Optimal Review Intervals**: The system tracks every word you learn. If you mark a word as "Mastered", the system calculates the perfect time to show it to you again (2 days, 4 days, 1 week, etc.) to ensure long-term retention.
 - **3D Interactive Cards**: Flip cards to reveal meanings, synonyms, and examples.
-- **Quick Hints**: Stuck? Click the "Hint" icon for a partial reveal.
-- **Hover-Translate**: Even during sprints, you can hover over the English word to see its translation.
+- **Hints & Translation**: Hover over any English word on a card to see its translation instantly.
+
+### 4. Dynamic Analytics
+- **Mastery Charts**: Track your performance in Grammar, Business, and Speaking with real-time accuracy percentages.
+- **Curriculum Progress**: See your ranking from A1 (Beginner) up to C1/C2 (Advanced Fluency).
+- **Digital Seals**: Upon reaching key milestones, unlock internal mastery seals (A2, B1, B2, C1) to track your personal growth ecosystem.
+    - *Disclaimer: These seals are internal progress rewards and are NOT official academic degrees or legally valid certifications.*
+
+### 5. Immersion Mode (Video Training) 🎬
+Improve your listening and vocabulary using real-word content:
+- **Interactive Subtitles**: Pause the video at any time and **hover** over words in the subtitles to see their translation.
+- **Smart Transcript**: Use the sidebar transcript to jump to specific parts of the video by clicking on sentences.
+- **Auto-Sync**: The subtitles are perfectly synced with the audio to help you practice pronunciation.
 
 ### 4. AI Chat Tutor 🤖
 At any time, click the floating bubble in the bottom-right corner:

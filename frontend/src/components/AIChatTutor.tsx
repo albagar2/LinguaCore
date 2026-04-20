@@ -17,23 +17,32 @@ const AIChatTutor: React.FC = () => {
     }
   }, [messages, isTyping]);
 
-  const handleSend = () => {
-    if (!input.trim()) return;
+  const handleSend = (textOverride?: string) => {
+    const messageText = textOverride || input;
+    if (!messageText.trim()) return;
 
-    const userMsg = input.trim();
-    setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
+    setMessages(prev => [...prev, { role: 'user', text: messageText }]);
     setInput('');
     setIsTyping(true);
 
-    // Mock AI Response
+    // AI Logic Engine (Simulated Sophistication)
     setTimeout(() => {
-      let response = "That's a great question! In English, we usually use that structure when...";
-      if (userMsg.toLowerCase().includes('hello')) response = "Hi there! Ready to level up your English?";
-      if (userMsg.toLowerCase().includes('help')) response = "I can explain grammar, check your spelling, or just chat! What's on your mind?";
+      let response = "";
+      const msg = messageText.toLowerCase();
+
+      if (msg.includes('check') || msg.includes('email') || msg.includes('writing')) {
+        response = "📝 Writing Analysis: Your text is clear but could be more professional. I suggest using 'I would appreciate if...' instead of 'I want...'. Clarity Score: 85%.";
+      } else if (msg.includes('grammar') || msg.includes('explain')) {
+        response = "💡 Grammar Tip: In English, we use the Present Perfect ('I have seen') for actions that started in the past and continue today. Would you like some examples?";
+      } else if (msg.includes('pronounce') || msg.includes('speak')) {
+        response = "🎙️ Speaking Coach: To sound more native, focus on 'Linking'. Try to connect the end of one word to the beginning of the next!";
+      } else {
+        response = "I'm here to help! We can practice conversation, check your writing, or dive deep into the English Master Book theory. What's our next goal?";
+      }
       
       setMessages(prev => [...prev, { role: 'bot', text: response }]);
       setIsTyping(false);
-    }, 1500);
+    }, 1200);
   };
 
   return (
@@ -97,6 +106,24 @@ const AIChatTutor: React.FC = () => {
               )}
             </div>
 
+            {/* Quick Suggestions */}
+            {messages.length < 3 && (
+                <div style={{ display: 'flex', gap: '0.5rem', padding: '0 1.5rem 1rem', overflowX: 'auto' }}>
+                    {['Check my email', 'Explain Grammar', 'Chat in English'].map(opt => (
+                        <button 
+                            key={opt}
+                            onClick={() => handleSend(opt)}
+                            style={{ 
+                                whiteSpace: 'nowrap', background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border)', 
+                                padding: '0.4rem 0.8rem', borderRadius: '10px', fontSize: '0.7rem', color: 'var(--text-muted)', cursor: 'pointer' 
+                            }}
+                        >
+                            {opt}
+                        </button>
+                    ))}
+                </div>
+            )}
+
             {/* Input */}
             <div style={{ padding: '1.25rem', borderTop: '1px solid var(--border)', display: 'flex', gap: '0.75rem' }}>
               <input 
@@ -107,7 +134,7 @@ const AIChatTutor: React.FC = () => {
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                 style={{ flex: 1, background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)', borderRadius: '12px', padding: '0.75rem 1rem', color: 'white', outline: 'none' }}
               />
-              <button onClick={handleSend} style={{ background: 'var(--primary)', border: 'none', borderRadius: '12px', width: '45px', height: '45px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', cursor: 'pointer' }}>
+              <button onClick={() => handleSend()} style={{ background: 'var(--primary)', border: 'none', borderRadius: '12px', width: '45px', height: '45px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', cursor: 'pointer' }}>
                 <Send size={20} />
               </button>
             </div>

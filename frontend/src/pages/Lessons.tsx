@@ -3,7 +3,7 @@ import api from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
     Play, BookText, BrainCircuit, Sparkles, 
-    Clock, Search, Filter, Headphones, Mic 
+    Clock, Search, Filter, Headphones, Mic, Film 
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SmartText from '../components/SmartText';
@@ -42,6 +42,9 @@ const Lessons: React.FC = () => {
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
            <span style={{ color: 'var(--primary)', fontWeight: '800', letterSpacing: '3px', fontSize: '0.75rem', textTransform: 'uppercase' }}>CURRICULUM ENGINE</span>
            <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', marginTop: '0.75rem' }}>Precision <span className="gradient-text">Learning.</span></h1>
+           <Link to="/immersion" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.75rem', marginTop: '2rem', padding: '1rem 2.5rem', background: 'rgba(99, 102, 241, 0.1)', border: '1px solid var(--primary)', borderRadius: '16px', color: 'var(--primary)', fontWeight: '800' }}>
+               <Film size={20} fill="var(--primary)" /> EXPLORE CINEMATIC LIBRARY
+           </Link>
         </motion.div>
       </header>
 

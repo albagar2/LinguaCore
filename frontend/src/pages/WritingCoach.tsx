@@ -3,22 +3,28 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Sparkles, CheckCircle, RefreshCcw } from 'lucide-react';
 
 const WritingCoach: React.FC = () => {
-    const [text, setText] = useState('');
-    const [isAnalyzing, setIsAnalyzing] = useState(false);
-    const [result, setResult] = useState<any>(null);
+    // Estados para la gestión de la entrada de texto y el flujo de la IA
+    const [text, setText] = useState(''); // Texto bruto ingresado por el usuario
+    const [isAnalyzing, setIsAnalyzing] = useState(false); // Estado de carga/procesamiento
+    const [result, setResult] = useState<any>(null); // Objeto de respuesta con correcciones y feedback
 
+    /**
+     * analyzeText: Simula el motor de análisis lingüístico.
+     * Evalúa gramática, sintaxis y tono comparándolos con modelos preestablecidos.
+     * En producción, este método llamaría a un servicio de LLM (OpenAI/Claude).
+     */
     const analyzeText = () => {
         if (!text.trim()) return;
         setIsAnalyzing(true);
         setResult(null);
 
-        // Simulation of AI analysis
+        // Simulación de latencia de red y procesamiento de lenguaje natural
         setTimeout(() => {
             setIsAnalyzing(false);
-            // Mock result
+            // Mock de respuesta enriquecida con metadatos de aprendizaje
             setResult({
                 status: 'success',
-                score: 85,
+                score: 85, // Claridad y precisión del 0 al 100
                 corrections: [
                     { original: "i has a dream", correction: "I have a dream", reason: "Subject-verb agreement and capitalization." },
                     { original: "more better", correction: "better", reason: "Double comparative error." }

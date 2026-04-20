@@ -4,44 +4,32 @@ LinguaCore is an elite, full-stack language learning ecosystem designed to trans
 
 ## ✨ Elite Features
 
-- **🧠 Smart Hover Translation**: Instant English-to-Spanish translation on hover for any word or sentence in lessons, dashboard, and flashcards.
+- **🧠 Smart Hover Translation**: Instant English-to-Spanish translation on hover for any word or sentence across the platform.
+- **📈 Advanced SRS Intelligence**: Spaced Repetition System logic that calculates optimal review intervals for each vocabulary word based on your memory performance.
+- 📊 **Real-time Analytics**: GitHub-inspired heatmap and category-specific mastery tracking.
+- 🏅 **Internal Mastery Seals**: Unlock progress rewards and achievement seals (A2-C1) for your internal curriculum profile.
 - **🎙️ AI Speaking Recognition**: Real-time pronunciation evaluation with feedback scores based on neural speech processing.
 - **🤖 AI Chat Tutor**: A resident floating assistant available 24/7 to solve grammar doubts and practice natural conversation.
-- **🎨 Cyber-Premium UI**: Glassmorphism 2.0, dynamic light/dark modes, and fluid animations powered by Framer Motion.
-- **📊 Advanced Analytics**: GitHub-style activity heatmaps and visual "Learning Journey" maps to track progress.
-- **🏆 Professional Gamification**: XP rewards, global leaderboards, daily streaks, and downloadable digital certificates.
-- **🗂️ Interactive Flashcards**: Spaced repetition system with "Study Sprints", hints, and native audio.
-- **🤖 AI Writing Coach**: Detailed feedback on clarity, grammar, and professional tone.
-- **⌨️ Pro Keyboard Navigation**: Full control using `1-4`, `Space`, and `Enter` for distraction-free learning.
+- **🎨 Glassmorphism 2.0 UI**: Ultra-premium design with depth layers, mesh gradients, and fluid cinematic transitions.
+- **🏆 Global Leaderboards & Achievements**: Compete with students worldwide and unlock medals for study consistency.
+- **📖 100% Curriculum Coverage**: Integration of the full "English Master Book" (6 Volumes) from A1 Foundations to C2 Native Mastery.
 
-## 📖 Deep Documentation
-- [User Manual](docs/USER_MANUAL.md) - Mastery guide for students.
-- [Developer Manual](docs/DEV_MANUAL.md) - Architecture, AI hooks, and API specs.
+## 📁 Repository Structure
+- `frontend/`: React + Vite + Framer Motion.
+- `backend/`: Node.js + Express + Prisma + SQLite.
+- `temario/`: Original PDF educational sources.
+- `docs/`: User and Developer manuals.
 
-## 🚀 Speed Setup (Windows)
+## 🚀 Getting Started
 
-### Prerequisites
-- Node.js (v18.x+)
-- npm (v9.x+)
+1. **Install Dependencies**: `npm install` in both folders.
+2. **Database Setup**: `npx prisma db push && npm run prisma:seed` in `backend`.
+3. **Launch**: Use `run.ps1` for automated startup.
 
-### Instant Launch
-Run the automated power-script in the root directory:
-```powershell
-./run.ps1
-```
-*This will automatically check dependencies, synchronize the database, and launch both the backend and frontend.*
-
-## 🏗️ World-Class Tech Stack
-- **Frontend:** React 18, Vite, TypeScript, Zustand (State), Framer Motion (UX), Lucide (Icons), Sonner (Toasts).
-- **Backend:** Node.js, Express, Prisma ORM, SQLite (Dev) / PostgreSQL (Prod).
-- **AI Modules:** Web Speech API (Recognition/TTS), Deterministic Fuzzy Matching.
-
-## 🛡️ Industrial-Grade Security
-- Security-by-design following OWASP guidelines.
-- Argon2id password hashing & JWT Stateless sessions.
-- Comprehensive request validation with Zod.
+## 🛠️ Tooling Recommendation
+- **Database Viewer**: Use the **Prisma Editor** or **Prisma Studio** extension in VS Code. Simply run `npx prisma studio` in the backend folder to see your real-time data in a browser.
 
 ---
 
-## 👩‍💻 Developed with ❤️ by Antigravity
+## 👩‍💻 Developed by Antigravity
 *Crafting the future of human-AI collaboration in education.*

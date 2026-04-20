@@ -23,10 +23,20 @@ const Flashcards: React.FC = () => {
       .catch(() => setLoading(false));
   }, []);
 
-  const handleNext = (isMastered: boolean) => {
-    if (isMastered) setMastered(prev => prev + 1);
+  const handleNext = async (isCorrect: boolean) => {
+    const wordId = words[currentIndex].id;
+    
+    // Call SRS API
+    try {
+        await api.post('/vocabulary/mastery', { vocabId: wordId, isCorrect });
+    } catch (error) {
+        console.error("SRS Sync failed", error);
+    }
+
+    if (isCorrect) setMastered(prev => prev + 1);
     setIsFlipped(false);
     setShowHint(false);
+    
     setTimeout(() => {
         if (currentIndex < words.length - 1) {
             setCurrentIndex(prev => prev + 1);
