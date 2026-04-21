@@ -19,7 +19,7 @@ const SmartText: React.FC<SmartTextProps> = ({ children, style }) => {
 
   // Create a regex to find any of the keys. We escape potential regex chars in keys.
   const escapedKeys = keys.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-  const regex = new RegExp(`\\b(${escapedKeys.join('|')})\\b`, 'gi');
+  const regex = new RegExp(`\\b(?:${escapedKeys.join('|')})\\b`, 'gi');
 
   const parts = children.split(regex);
   const matches = children.match(regex) || [];

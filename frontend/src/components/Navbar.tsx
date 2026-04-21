@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuthStore } from '../store/authStore';
 import { useThemeStore } from '../store/themeStore';
-import { LogOut, User, BookOpen, LayoutDashboard, BookMarked, Sparkles, Moon, Sun, FileText, Bell, ChevronDown, Star } from 'lucide-react';
+import { LogOut, User, BookOpen, LayoutDashboard, BookMarked, Sparkles, Moon, Sun, FileText, Bell, ChevronDown, Star, BrainCircuit } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
@@ -13,12 +13,38 @@ const Navbar: React.FC = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   
-  const [notifications, setNotifications] = useState([
-    { id: 1, text: "Challenge accepted by Alex_Master!", time: "2m ago", icon: <Sparkles size={14}/>, read: false },
-    { id: 2, text: "You reached ADVANCED level!", time: "1h ago", icon: <Star size={14} color="#f59e0b" fill="#f59e0b"/>, read: false },
-  ]);
+  const [notifications, setNotifications] = useState(() => {
+    const storageKey = `lingua_notifications_${user?.id || 'guest'}`;
+    const saved = localStorage.getItem(storageKey);
+    
+    if (saved) {
+      return JSON.parse(saved);
+    }
+
+    // Default notifications if none saved
+    const base = [
+      { id: 1, text: `Challenge accepted by ${user?.level === 'ADVANCED' ? 'Alex_Master' : user?.level === 'INTERMEDIATE' ? 'Fluent_Sam' : 'Coach_Emma'}!`, time: "2m ago", icon: <Sparkles size={14}/>, read: false },
+    ];
+
+    if (user?.level === 'ADVANCED') {
+      base.push({ id: 2, text: "You reached ADVANCED level! Welcome to the elite.", time: "1h ago", icon: <Star size={14} color="#f59e0b" fill="#f59e0b"/>, read: false });
+    } else if (user?.level === 'INTERMEDIATE') {
+      base.push({ id: 2, text: "Now in INTERMEDIATE. Higher stakes, faster speaking.", time: "1h ago", icon: <Star size={14} color="#10b981" fill="#10b981"/>, read: false });
+    } else {
+      base.push({ id: 2, text: "Welcome to LinguaCore! Start your BEGINNER journey.", time: "5m ago", icon: <Star size={14} color="var(--primary)" fill="var(--primary)"/>, read: false });
+    }
+    return base;
+  });
 
   const navigate = useNavigate();
+
+  // Persist notifications to localStorage whenever they change
+  React.useEffect(() => {
+    const storageKey = `lingua_notifications_${user?.id || 'guest'}`;
+    // We strip React components (icons) before stringifying
+    const serializable = notifications.map(n => ({ ...n, icon: null })); 
+    localStorage.setItem(storageKey, JSON.stringify(serializable));
+  }, [notifications, user?.id]);
 
   const handleLogout = () => {
     logout();
@@ -39,6 +65,14 @@ const Navbar: React.FC = () => {
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
+  // Since icons were stripped for storage, we re-inject them for rendering
+  const getIcon = (id: number) => {
+    if (id === 1) return <Sparkles size={14}/>;
+    if (user?.level === 'ADVANCED') return <Star size={14} color="#f59e0b" fill="#f59e0b"/>;
+    if (user?.level === 'INTERMEDIATE') return <Star size={14} color="#10b981" fill="#10b981"/>;
+    return <Star size={14} color="var(--primary)" fill="var(--primary)"/>;
+  };
+
   return (
     <nav style={{ padding: '1rem 2rem', background: 'var(--card-bg)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 100 }}>
       <Link to="/" style={{ textDecoration: 'none', fontSize: '1.5rem', fontWeight: 'bold' }} className="gradient-text">
@@ -52,6 +86,9 @@ const Navbar: React.FC = () => {
             </Link>
             <Link to="/writing-coach" style={{ color: 'var(--text-muted)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', fontWeight: 'bold' }}>
               <Sparkles size={20} color="var(--primary)" /> AI Coach
+            </Link>
+            <Link to="/flashcards" style={{ color: 'var(--text-muted)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', fontWeight: 'bold' }}>
+              <BrainCircuit size={20} color="var(--accent)" /> Cards
             </Link>
             <Link to="/glossary" style={{ color: 'var(--text-muted)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', fontWeight: 'bold' }}>
               <BookMarked size={20} /> Glossary
@@ -111,7 +148,7 @@ const Navbar: React.FC = () => {
                                             }}
                                         >
                                             <div style={{ padding: '0.5rem', background: n.read ? 'var(--icon-bg)' : 'rgba(99, 102, 241, 0.15)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                {n.icon}
+                                                {getIcon(n.id)}
                                             </div>
                                             <div style={{ flex: 1 }}>
                                                 <p style={{ fontSize: '0.85rem', margin: 0, fontWeight: n.read ? '400' : '700', color: n.read ? 'var(--text-muted)' : 'var(--text-main)', lineHeight: '1.4' }}>{n.text}</p>

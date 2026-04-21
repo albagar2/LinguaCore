@@ -180,6 +180,17 @@ const LessonDetail: React.FC = () => {
                 <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem' }}>Master the core concepts before practicing.</p>
             </div>
 
+            {lesson.videoUrl && (
+                <div style={{ marginBottom: '3rem', borderRadius: '24px', overflow: 'hidden', border: '1px solid var(--border)', boxShadow: '0 20px 40px rgba(0,0,0,0.4)', background: '#000' }}>
+                    <video 
+                        src={lesson.videoUrl} 
+                        controls 
+                        style={{ width: '100%', height: 'auto', display: 'block' }}
+                        poster="https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&q=80&w=1200"
+                    />
+                </div>
+            )}
+
             <div style={{ position: 'relative', marginBottom: '4rem' }}>
                 <button 
                     onClick={() => speak(lesson.content)}
@@ -291,6 +302,31 @@ const ExerciseRenderer = ({ exercise, feedback, selectedOption, setSelectedOptio
                     <h4 style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>Read the following aloud:</h4>
                     <h2 style={{ fontSize: '2.5rem', marginBottom: '3rem', color: 'var(--primary)' }}>"{exercise.correctAnswer}"</h2>
                     
+                    {/* Fallback for error/compatibility */}
+                    {speakingProps.error && (
+                        <div style={{ marginBottom: '2rem', width: '100%', maxWidth: '400px' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                                <input 
+                                    type="text"
+                                    placeholder="Type the phrase to complete... / Escribe la frase..."
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            setSelectedOption((e.target as HTMLInputElement).value);
+                                        }
+                                    }}
+                                    style={{ 
+                                        width: '100%', padding: '1rem', borderRadius: '12px', 
+                                        background: 'var(--surface-alt)', border: '1px solid var(--primary)',
+                                        color: 'var(--text-main)', outline: 'none', fontSize: '1rem'
+                                    }}
+                                />
+                                <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                                    Speech Offline: You can type as a fallback. Press Enter to process.
+                                </p>
+                            </div>
+                        </div>
+                    )}
+                    
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem' }}>
                         <motion.button 
                             animate={{ scale: speakingProps.isListening ? [1, 1.1, 1] : 1 }}
@@ -317,7 +353,11 @@ const ExerciseRenderer = ({ exercise, feedback, selectedOption, setSelectedOptio
                                 <span style={{ fontWeight: 'bold' }}>"{speakingProps.transcript}"</span>
                             </motion.div>
                         )}
-                        {speakingProps.error && <p style={{ color: 'var(--danger)', fontSize: '0.8rem' }}>Error: {speakingProps.error}</p>}
+                        {speakingProps.error && (
+                            <p style={{ color: 'var(--danger)', fontSize: '0.85rem', background: 'rgba(239, 68, 68, 0.1)', padding: '0.5rem 1rem', borderRadius: '8px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+                                {speakingProps.error}
+                            </p>
+                        )}
                     </div>
                 </div>
             ) : (

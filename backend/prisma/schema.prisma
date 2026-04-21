@@ -30,7 +30,8 @@ model Lesson {
   description String
   content     String
   level       String   // BEGINNER, INTERMEDIATE, ADVANCED
-  category    String   // GRAMMAR, VOCABULARY, READING
+  category    String   // GRAMMAR, VOCABULARY, READING, LISTENING, SPEAKING
+  videoUrl    String?  // Optional video for listening/pronunciation lessons
   exercises   Exercise[]
   progress    Progress[]
   createdAt   DateTime @default(now())

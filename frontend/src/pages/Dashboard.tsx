@@ -10,6 +10,8 @@ import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import SmartText from '../components/SmartText';
 import Spinner from '../components/Spinner';
+import StatsPanel from '../components/StatsPanel';
+import AchievementsCabinet from '../components/AchievementsCabinet';
 
 const Dashboard: React.FC = () => {
   // Estado global de la sesión del usuario
@@ -20,6 +22,27 @@ const Dashboard: React.FC = () => {
   const [leaderboard, setLeaderboard] = useState<any[]>([]); // Ranking global de XP
   const [analytics, setAnalytics] = useState<any>(null); // Datos de precisión y progreso
   const [loading, setLoading] = useState(true); // Control de carga inicial
+
+  // Mock data for the new Analytics Lab
+  const statsData = {
+    skills: [
+        { subject: 'Grammar', A: 85, fullMark: 100 },
+        { subject: 'Vocabulary', A: 70, fullMark: 100 },
+        { subject: 'Reading', A: 90, fullMark: 100 },
+        { subject: 'Listening', A: 65, fullMark: 100 },
+        { subject: 'Speaking', A: 50, fullMark: 100 },
+        { subject: 'Business', A: 75, fullMark: 100 },
+    ],
+    activity: [
+        { name: 'Mon', xp: 120 },
+        { name: 'Tue', xp: 250 },
+        { name: 'Wed', xp: 180 },
+        { name: 'Thu', xp: 320 },
+        { name: 'Fri', xp: 450 },
+        { name: 'Sat', xp: 100 },
+        { name: 'Sun', xp: 0 },
+    ]
+  };
 
   /**
    * Carga inicial de datos: Combina peticiones de lecciones, ranking y analíticas
@@ -187,26 +210,16 @@ const Dashboard: React.FC = () => {
       <div style={{ display: 'grid', gridTemplateColumns: '1.8fr 1.2fr', gap: '3rem' }}>
         
         <div style={{ display: 'grid', gap: '3rem' }}>
-            {/* Análisis Gráfico de Maestría por Categoría */}
-            <div className="glass-card" style={{ padding: '2rem' }}>
-                <h3 style={{ marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}><Target size={20} color="var(--primary)" /> Mastery Analysis</h3>
-                <div style={{ display: 'flex', alignItems: 'flex-end', height: '200px', gap: '1rem', paddingBottom: '2rem', borderBottom: '1px solid var(--border)' }}>
-                    {analytics?.accuracy?.map((seg: any) => (
-                        <div key={seg.category} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem' }}>
-                            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 'bold' }}>{seg.score}%</div>
-                            <motion.div 
-                                initial={{ height: 0 }}
-                                animate={{ height: `${seg.score}%` }}
-                                style={{ width: '100%', maxWidth: '40px', background: 'linear-gradient(180deg, var(--primary), var(--primary-glow))', borderRadius: '8px 8px 4px 4px', boxShadow: '0 4px 15px var(--primary-glow)' }}
-                            />
-                            <div style={{ fontSize: '0.6rem', fontWeight: '800', textAlign: 'center', width: '100%', whiteSpace: 'nowrap', overflow: 'hidden' }}>{seg.category}</div>
-                        </div>
-                    ))}
-                    {analytics?.accuracy?.length === 0 && (
-                        <div style={{ width: '100%', textAlign: 'center', color: 'var(--text-muted)' }}>No data yet. Complete some lessons!</div>
-                    )}
+            {/* New Analytics Lab */}
+            <section>
+                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                    <h2 style={{ fontSize: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}><Target size={20} color="var(--primary)" /> Analytics Lab</h2>
                 </div>
-            </div>
+                <StatsPanel data={statsData} />
+            </section>
+
+            {/* Achievements Cabinet */}
+            <AchievementsCabinet />
 
             {/* Learning Path (Visual Map) */}
             <section className="glass-card" style={{ padding: '2rem' }}>
@@ -306,7 +319,7 @@ const Dashboard: React.FC = () => {
                 <div style={{ padding: '1rem', background: 'rgba(245, 158, 11, 0.05)', borderRadius: '16px', border: '1px dotted #f59e0b' }}>
                     <p style={{ fontSize: '0.8rem', fontWeight: 'bold', color: '#f59e0b', marginBottom: '0.5rem' }}>ACTIVE CHALLENGE</p>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: '0.9rem' }}>vs. Alex_Master</span>
+                        <span style={{ fontSize: '0.9rem' }}>vs. {user?.level === 'ADVANCED' ? 'Alex_Master' : user?.level === 'INTERMEDIATE' ? 'Fluent_Sam' : 'Coach_Emma'}</span>
                         <button 
                             onClick={handleAcceptChallenge}
                             className="btn-primary" 

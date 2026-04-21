@@ -1,141 +1,110 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Sparkles, CheckCircle, RefreshCcw } from 'lucide-react';
-import PageHeader from '../components/PageHeader';
+import { Wand2, AlertCircle, CheckCircle2, ChevronRight } from 'lucide-react';
+import { toast } from 'sonner';
 
 const WritingCoach: React.FC = () => {
-    // Estados para la gestión de la entrada de texto y el flujo de la IA
-    const [text, setText] = useState(''); // Texto bruto ingresado por el usuario
-    const [isAnalyzing, setIsAnalyzing] = useState(false); // Estado de carga/procesamiento
-    const [result, setResult] = useState<any>(null); // Objeto de respuesta con correcciones y feedback
+    const [text, setText] = useState('');
+    const [analyzing, setAnalyzing] = useState(false);
+    const [result, setResult] = useState<any>(null);
 
-    /**
-     * analyzeText: Simula el motor de análisis lingüístico.
-     * Evalúa gramática, sintaxis y tono comparándolos con modelos preestablecidos.
-     * En producción, este método llamaría a un servicio de LLM (OpenAI/Claude).
-     */
-    const analyzeText = () => {
-        if (!text.trim()) return;
-        setIsAnalyzing(true);
-        setResult(null);
-
-        // Simulación de latencia de red y procesamiento de lenguaje natural
+    const handleAnalyze = () => {
+        if (text.length < 20) {
+            toast.error("Please write a bit more for a comprehensive analysis.");
+            return;
+        }
+        setAnalyzing(true);
+        // Simulate AI analysis
         setTimeout(() => {
-            setIsAnalyzing(false);
-            // Mock de respuesta enriquecida con metadatos de aprendizaje
             setResult({
-                status: 'success',
-                score: 85, // Claridad y precisión del 0 al 100
-                corrections: [
-                    { original: "i has a dream", correction: "I have a dream", reason: "Subject-verb agreement and capitalization." },
-                    { original: "more better", correction: "better", reason: "Double comparative error." }
+                score: 82,
+                errors: [
+                    { word: 'is', type: 'grammar', suggestion: 'has been', explanation: 'Present perfect is better for ongoing actions.', index: 12 },
+                    { word: 'happy', type: 'style', suggestion: 'delighted', explanation: 'Use more sophisticated adjectives in professional contexts.', index: 25 },
                 ],
-                feedback: "Your sentence structure is good, but watch out for basic grammar rules like subject-verb agreement. Try using more diverse vocabulary to express your ideas."
+                strengths: ['Great vocabulary variety', 'Clear structure'],
+                tone: 'Friendly / Professional'
             });
+            setAnalyzing(false);
         }, 2000);
     };
 
     return (
-        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <PageHeader 
-        title="Writing Coach"
-        subtitle="Write anything in English and get instant feedback from our advanced AI."
-        badge={<><Sparkles size={16} /> AI POWERED</>}
-      />
-
-            <div className="glass-card" style={{ padding: '2.5rem' }}>
-                <textarea 
-                    value={text}
-                    onChange={(e) => setText(e.target.value)}
-                    placeholder="Type or paste your English text here..."
-                    style={{
-                        width: '100%',
-                        height: '200px',
-                        background: 'var(--input-bg)',
-                        border: '1px solid var(--border)',
-                        borderRadius: '16px',
-                        color: 'var(--input-color)',
-                        padding: '1.5rem',
-                        fontSize: '1.1rem',
-                        resize: 'none',
-                        outline: 'none',
-                        marginBottom: '2rem'
-                    }}
-                />
-
-                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                    <button 
-                        onClick={analyzeText}
-                        disabled={isAnalyzing || !text.trim()}
-                        className="btn-primary"
-                        style={{ padding: '1rem 3rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}
-                    >
-                        {isAnalyzing ? (
-                            <>
-                                <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }}><RefreshCcw size={18} /></motion.div>
-                                ANALYZING...
-                            </>
-                        ) : (
-                            <>
-                                <Send size={18} /> ANALYZE TEXT
-                            </>
-                        )}
-                    </button>
-                </div>
+        <div style={{ maxWidth: '1000px', margin: '0 auto', paddingBottom: '10rem' }}>
+            <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
+                <h1 className="gradient-text" style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>AI Writing Coach.</h1>
+                <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem' }}>Get instant linguistic heatmaps and stylistic suggestions.</p>
             </div>
 
-            <AnimatePresence>
-                {result && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        style={{ marginTop: '3rem' }}
+            <div style={{ display: 'grid', gridTemplateColumns: result ? '1.5fr 1fr' : '1fr', gap: '3rem' }}>
+                <div className="glass-card" style={{ padding: '2.5rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+                        <span style={{ fontWeight: 'bold', color: 'var(--primary)' }}>YOUR ESSAY</span>
+                        <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{text.length} characters</span>
+                    </div>
+                    <textarea 
+                        value={text}
+                        onChange={(e) => setText(e.target.value)}
+                        placeholder="Paste your English text here..."
+                        style={{ 
+                            width: '100%', height: '400px', background: 'var(--surface-alt)', 
+                            border: '1px solid var(--border)', borderRadius: '16px', padding: '1.5rem',
+                            color: 'var(--text-main)', fontSize: '1.1rem', resize: 'none', outline: 'none',
+                            lineHeight: '1.6'
+                        }}
+                    />
+                    <button 
+                        onClick={handleAnalyze}
+                        disabled={analyzing}
+                        className="btn-primary" 
+                        style={{ width: '100%', marginTop: '2rem', padding: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}
                     >
-                        <div className="glass-card" style={{ padding: '2.5rem', borderLeft: '4px solid var(--primary)' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                                <h3 style={{ fontSize: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                    <CheckCircle color="var(--accent)" /> Analysis Result
-                                </h3>
-                                <div style={{ textAlign: 'right' }}>
-                                    <span style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--primary)' }}>{result.score}%</span>
-                                    <p style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>CLARITY SCORE</p>
-                                </div>
+                        {analyzing ? 'AI ENGINES CALIBRATING...' : <><Wand2 size={20} /> ANALYZE WRITING</>}
+                    </button>
+                </div>
+
+                <AnimatePresence>
+                    {result && !analyzing && (
+                        <motion.div
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: 20 }}
+                        >
+                            <div className="glass-card" style={{ padding: '2.5rem', marginBottom: '2rem', textAlign: 'center' }}>
+                                <div style={{ fontSize: '3rem', fontWeight: 'bold', color: 'var(--primary)' }}>{result.score}%</div>
+                                <p style={{ color: 'var(--text-muted)' }}>LINGUISTIC QUALITY SCORE</p>
                             </div>
 
-                            <div style={{ marginBottom: '2.5rem' }}>
-                                <h4 style={{ fontSize: '1rem', color: 'var(--text-muted)', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Suggestions</h4>
-                                <div style={{ display: 'grid', gap: '1rem' }}>
-                                    {result.corrections.map((c: any, i: number) => (
-                                        <div key={i} style={{ padding: '1.25rem', background: 'var(--surface)', borderRadius: '12px', border: '1px solid var(--border)' }}>
-                                            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '0.5rem' }}>
-                                                <span style={{ color: 'var(--danger)', textDecoration: 'line-through', fontSize: '0.9rem' }}>{c.original}</span>
-                                                <Arrow />
-                                                <span style={{ color: 'var(--accent)', fontWeight: 'bold' }}>{c.correction}</span>
+                            <div className="glass-card" style={{ padding: '2.5rem' }}>
+                                <h3 style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}><AlertCircle size={20} color="#fb7185" /> SUGGESTIONS</h3>
+                                <div style={{ display: 'grid', gap: '1.5rem' }}>
+                                    {result.errors.map((err: any, i: number) => (
+                                        <div key={i} style={{ padding: '1rem', background: 'rgba(251, 113, 133, 0.05)', borderRadius: '12px', borderLeft: '4px solid #fb7185' }}>
+                                            <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                                                <span style={{ textDecoration: 'line-through', opacity: 0.5 }}>{err.word}</span>
+                                                <ChevronRight size={16} />
+                                                <span style={{ fontWeight: 'bold', color: '#fb7185' }}>{err.suggestion}</span>
                                             </div>
-                                            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{c.reason}</p>
+                                            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>{err.explanation}</p>
                                         </div>
                                     ))}
                                 </div>
-                            </div>
 
-                            <div>
-                                <h4 style={{ fontSize: '1rem', color: 'var(--text-muted)', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '1px' }}>General Feedback</h4>
-                                <p style={{ lineHeight: '1.6', color: 'var(--text-muted)' }}>{result.feedback}</p>
+                                <h3 style={{ marginTop: '2rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}><CheckCircle2 size={20} color="#34d399" /> STRENGTHS</h3>
+                                <ul style={{ listStyle: 'none', padding: 0 }}>
+                                    {result.strengths.map((s: string, i: number) => (
+                                        <li key={i} style={{ marginBottom: '0.75rem', fontSize: '0.9rem', display: 'flex', gap: '0.5rem' }}>
+                                            <span style={{ color: '#34d399' }}>✓</span> {s}
+                                        </li>
+                                    ))}
+                                </ul>
                             </div>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </div>
         </div>
     );
 };
-
-const Arrow = () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: 'var(--text-muted)' }}>
-        <path d="M5 12h14" />
-        <path d="m12 5 7 7-7 7" />
-    </svg>
-);
 
 export default WritingCoach;

@@ -43,6 +43,90 @@ const VIDEO_CATALOG: VideoEntry[] = [
         ]
     },
     {
+        id: '4',
+        title: 'The Future of AI',
+        description: 'Understand the business implications of artificial intelligence and automation.',
+        thumbnail: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=800',
+        url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+        category: 'Business',
+        level: 'C1',
+        subtitles: [
+            { start: 0, end: 4, text: "Artificial Intelligence is transforming the global business landscape." },
+            { start: 4, end: 8, text: "Automation provides a unique opportunity for scaling efficiency." },
+            { start: 8, end: 12, text: "Successful organizations will adapt to this digital paradigm shift." }
+        ]
+    },
+    {
+        id: '5',
+        title: 'Mars Colonization',
+        description: 'Scientific English focused on space exploration and planetary science.',
+        thumbnail: 'https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&q=80&w=800',
+        url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+        category: 'Grammar',
+        level: 'B2',
+        subtitles: [
+            { start: 0, end: 5, text: "The journey to Mars requires unprecedented engineering precision." },
+            { start: 5, end: 10, text: "Establishing a permanent colony is the ultimate goal of space agencies." },
+            { start: 10, end: 15, text: "Gravity on the Red Planet is only one third of Earth's gravity." }
+        ]
+    },
+    {
+        id: '6',
+        title: 'London Travel Guide',
+        description: 'Daily life English for navigating one of the world\'s most vibrant cities.',
+        thumbnail: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&q=80&w=800',
+        url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
+        category: 'Daily Life',
+        level: 'A1',
+        subtitles: [
+            { start: 0, end: 4, text: "Welcome to London, a city where history meets the modern world." },
+            { start: 4, end: 8, text: "You can visit the Big Ben and the London Eye by the river." },
+            { start: 8, end: 12, text: "The underground is the fastest way to travel across the city." }
+        ]
+    },
+    {
+        id: '7',
+        title: 'The Rise of the Metaverse',
+        description: 'Virtual reality, digital assets, and the future of social interaction.',
+        thumbnail: 'https://images.unsplash.com/photo-1614850523296-d8c1af93d400?auto=format&fit=crop&q=80&w=800',
+        url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+        category: 'Business',
+        level: 'C1',
+        subtitles: [
+            { start: 0, end: 5, text: "The Metaverse is an evolution of the internet towards a 3D immersive space." },
+            { start: 5, end: 10, text: "Interoperability between virtual worlds remains a key challenge for developers." },
+            { start: 10, end: 15, text: "Digital ownership is powered by decentralized technology." }
+        ]
+    },
+    {
+        id: '8',
+        title: 'Climate Change Solutions',
+        description: 'Green energy transition and individual impact on the environment.',
+        thumbnail: 'https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&q=80&w=800',
+        url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+        category: 'Grammar',
+        level: 'B2',
+        subtitles: [
+            { start: 0, end: 5, text: "Renewable energy sources like solar and wind are growing exponentially." },
+            { start: 5, end: 10, text: "We must reduce our carbon footprint to meet global targets." },
+            { start: 10, end: 15, text: "Sustainability is no longer optional for major corporations." }
+        ]
+    },
+    {
+        id: '9',
+        title: 'Remote Work Revolution',
+        description: 'How the world changed its way of working forever.',
+        thumbnail: 'https://images.unsplash.com/photo-1587560699334-cc4ff634909a?auto=format&fit=crop&q=80&w=800',
+        url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4',
+        category: 'Business',
+        level: 'B2',
+        subtitles: [
+            { start: 0, end: 5, text: "The shift to remote work has redefined the traditional office space." },
+            { start: 5, end: 10, text: "Work-life balance and mental health are now top priorities for employees." },
+            { start: 10, end: 15, text: "Asynchronous communication allows teams to work across time zones." }
+        ]
+    },
+    {
         id: '2',
         title: 'Cinematic Narrative: Sintel',
         description: 'Analyze storytelling structures and emotional vocabulary in this epic saga.',

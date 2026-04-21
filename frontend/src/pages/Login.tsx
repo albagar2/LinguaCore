@@ -7,7 +7,7 @@ import { useAuthStore } from '../store/authStore';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { toast } from 'sonner';
-import { Mail, Lock, LogIn, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, LogIn, Eye, EyeOff, Info } from 'lucide-react';
 
 const loginSchema = z.object({
   email: z.string().email('Please enter a valid email address'),
@@ -138,12 +138,34 @@ const Login: React.FC = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '0.75rem'
+              gap: '0.75rem',
+              width: '100%'
             }}
           >
             {isSubmitting ? 'Verifying...' : 'Sign In Now'}
           </button>
         </form>
+
+        {/* Portfolio Demo Message */}
+        <div style={{ 
+          marginTop: '2rem', 
+          padding: '1.25rem', 
+          background: 'rgba(99, 102, 241, 0.05)', 
+          borderRadius: '12px', 
+          border: '1px solid rgba(99, 102, 241, 0.2)',
+          display: 'flex',
+          gap: '1rem'
+        }}>
+          <div style={{ color: 'var(--primary)', marginTop: '0.2rem' }}>
+            <Info size={18} />
+          </div>
+          <div style={{ textAlign: 'left' }}>
+            <p style={{ fontSize: '0.85rem', fontWeight: 'bold', marginBottom: '0.25rem', color: 'var(--text-main)' }}>Portfolio Showcase Mode</p>
+            <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: '1.4' }}>
+              Use <code style={{ color: 'var(--primary)', fontWeight: 'bold' }}>admin@linguacore.com</code> / <code style={{ color: 'var(--primary)', fontWeight: 'bold' }}>admin1234</code> to access all features.
+            </p>
+          </div>
+        </div>
 
         <div style={{ marginTop: '2rem', textAlign: 'center', fontSize: '0.875rem', color: 'var(--text-muted)' }}>
           Don't have an account? <Link to="/register" style={{ color: 'var(--primary)', fontWeight: '600', textDecoration: 'none' }}>Create one</Link>

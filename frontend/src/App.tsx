@@ -26,6 +26,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
 function App() {
   const { isDarkMode } = useThemeStore();
+  const { user } = useAuthStore();
 
   React.useEffect(() => {
     if (!isDarkMode) {
@@ -33,7 +34,13 @@ function App() {
     } else {
       document.body.classList.remove('light-theme');
     }
-  }, [isDarkMode]);
+
+    // Atmospheric Level Themes
+    document.body.classList.remove('level-beginner', 'level-intermediate', 'level-advanced');
+    if (user?.level) {
+      document.body.classList.add(`level-${user.level.toLowerCase()}`);
+    }
+  }, [isDarkMode, user?.level]);
 
   return (
     <TranslationProvider>
