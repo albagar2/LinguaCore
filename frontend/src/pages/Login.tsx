@@ -79,9 +79,9 @@ const Login: React.FC = () => {
                   width: '100%', 
                   padding: '0.875rem 0.875rem 0.875rem 2.5rem', 
                   borderRadius: '10px', 
-                  background: 'rgba(255,255,255,0.03)', 
+                  background: 'var(--input-bg)', 
                   border: '1px solid var(--border)', 
-                  color: 'white',
+                  color: 'var(--input-color)',
                   transition: 'var(--transition)'
                 }} 
               />
@@ -101,9 +101,9 @@ const Login: React.FC = () => {
                   width: '100%', 
                   padding: '0.875rem 3rem 0.875rem 2.5rem', 
                   borderRadius: '10px', 
-                  background: 'rgba(255,255,255,0.03)', 
+                  background: 'var(--input-bg)', 
                   border: '1px solid var(--border)', 
-                  color: 'white',
+                  color: 'var(--input-color)',
                   transition: 'var(--transition)'
                 }} 
               />

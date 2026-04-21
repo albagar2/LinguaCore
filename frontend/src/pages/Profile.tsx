@@ -4,6 +4,7 @@ import { ArrowLeft, User, Mail, Shield, Save, Camera } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import { toast } from 'sonner';
+import PageHeader from '../components/PageHeader';
 
 const Profile: React.FC = () => {
     // Obtención de datos del usuario actual desde Zustand
@@ -20,6 +21,7 @@ const Profile: React.FC = () => {
      */
     const handleSave = () => {
         setIsSaving(true);
+        // TODO: implement real PATCH /auth/profile call and update store
         setTimeout(() => {
             setIsSaving(false);
             toast.success("Profile updated successfully!", {
@@ -34,10 +36,11 @@ const Profile: React.FC = () => {
                 <Link to="/dashboard" style={{ color: 'var(--text-muted)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.75rem', fontWeight: 'bold', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
                     <ArrowLeft size={18} /> BACK TO DASHBOARD
                 </Link>
-                <h1 style={{ fontSize: '3rem', fontWeight: '900', letterSpacing: '-1.5px' }}>
-                    Account <span className="gradient-text">Settings.</span>
-                </h1>
-                <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>Manage your identity and digital learning profile.</p>
+                <PageHeader 
+                    title="Account Settings."
+                    subtitle="Manage your identity and digital learning profile."
+                    centered={false}
+                />
             </header>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '3rem' }}>
@@ -54,7 +57,7 @@ const Profile: React.FC = () => {
                         <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 'bold' }}>{user?.role} Profile</p>
                         
                         <div style={{ marginTop: '2rem', display: 'grid', gap: '0.5rem' }}>
-                            <div style={{ background: 'rgba(255,255,255,0.03)', padding: '0.75rem', borderRadius: '12px', fontSize: '0.8rem' }}>
+                            <div style={{ background: 'var(--surface)', padding: '0.75rem', borderRadius: '12px', fontSize: '0.8rem', border: '1px solid var(--border)' }}>
                                 <span style={{ color: 'var(--primary)', fontWeight: 'bold' }}>{user?.xp}</span> Total XP Earned
                             </div>
                         </div>
@@ -72,7 +75,7 @@ const Profile: React.FC = () => {
                                 type="text" 
                                 value={name} 
                                 onChange={(e) => setName(e.target.value)}
-                                style={{ width: '100%', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)', borderRadius: '12px', padding: '1rem', color: 'white', outline: 'none' }}
+                                style={{ width: '100%', background: 'var(--input-bg)', border: '1px solid var(--border)', borderRadius: '12px', padding: '1rem', color: 'var(--input-color)', outline: 'none' }}
                             />
                         </div>
 
@@ -84,7 +87,7 @@ const Profile: React.FC = () => {
                                 type="email" 
                                 value={email} 
                                 onChange={(e) => setEmail(e.target.value)}
-                                style={{ width: '100%', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)', borderRadius: '12px', padding: '1rem', color: 'white', opacity: 0.6, cursor: 'not-allowed' }}
+                                style={{ width: '100%', background: 'var(--input-bg)', border: '1px solid var(--border)', borderRadius: '12px', padding: '1rem', color: 'var(--input-color)', opacity: 0.6, cursor: 'not-allowed' }}
                                 disabled
                             />
                             <p style={{ fontSize: '0.7rem', color: 'var(--accent)', marginTop: '0.5rem' }}>Contact admin to change restricted login emails.</p>

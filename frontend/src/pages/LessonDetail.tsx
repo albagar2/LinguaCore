@@ -11,6 +11,7 @@ import { useTTS } from '../hooks/useTTS';
 import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
 import { useAuthStore } from '../store/authStore';
 import SmartText from '../components/SmartText';
+import Spinner from '../components/Spinner';
 
 type ViewMode = 'theory' | 'practice';
 
@@ -144,11 +145,7 @@ const LessonDetail: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [mode, feedback, selectedOption, lesson, currentExerciseIndex, handleCheck, nextStep, speak]);
 
-  if (loading) return (
-    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10rem' }}>
-        <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }} style={{ border: '4px solid var(--border)', borderTop: '4px solid var(--primary)', borderRadius: '50%', width: '40px', height: '40px' }} />
-    </div>
-  );
+  if (loading) return <Spinner />;
   
   if (!lesson) return <div style={{ textAlign: 'center', marginTop: '4rem' }}><h2>Lesson not found</h2></div>;
 
@@ -191,7 +188,7 @@ const LessonDetail: React.FC = () => {
                     <Volume2 size={24} />
                 </button>
 
-                <div style={{ lineHeight: '1.8', fontSize: '1.1rem', color: '#d1d5db', background: 'rgba(255,255,255,0.02)', padding: '2.5rem', borderRadius: '16px', border: '1px solid var(--border)' }}>
+                <div style={{ lineHeight: '1.8', fontSize: '1.1rem', color: 'var(--text-main)', background: 'var(--surface-alt)', padding: '2.5rem', borderRadius: '16px', border: '1px solid var(--border)' }}>
                     {lesson.content.split('\n').map((line: string, i: number) => (
                         <p key={i} style={{ marginBottom: '1rem' }}>
                             <SmartText>{line}</SmartText>
@@ -220,7 +217,7 @@ const LessonDetail: React.FC = () => {
           >
             {/* Progress Bar */}
             <div style={{ marginBottom: '3rem' }}>
-                <div style={{ height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', overflow: 'hidden' }}>
+                <div style={{ height: '6px', background: 'var(--progress-track)', borderRadius: '3px', overflow: 'hidden' }}>
                     <motion.div initial={{ width: 0 }} animate={{ width: `${progressPercentage}%` }} style={{ height: '100%', background: 'var(--primary)' }} />
                 </div>
             </div>
@@ -249,9 +246,10 @@ const LessonDetail: React.FC = () => {
   );
 };
 
-const Tab = ({ active, label }: { active: boolean, label: string }) => (
+const Tab = ({ active, label }: { active: boolean; label: string }) => (
     <span style={{ 
-        background: active ? 'var(--primary)' : 'rgba(255,255,255,0.05)', 
+        background: active ? 'var(--primary)' : 'var(--surface)', 
+        color: active ? 'white' : 'var(--text-muted)',
         padding: '0.4rem 1rem', 
         borderRadius: '10px', 
         fontSize: '0.8rem', 
@@ -281,7 +279,7 @@ const ExerciseRenderer = ({ exercise, feedback, selectedOption, setSelectedOptio
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => speak(exercise.question)}
-                        style={{ padding: '2rem', background: 'rgba(255,255,255,0.02)', border: '2px dashed var(--primary)', borderRadius: '24px', width: '100%', cursor: 'pointer' }}
+                        style={{ padding: '2rem', background: 'var(--surface-alt)', border: '2px dashed var(--primary)', borderRadius: '24px', width: '100%', cursor: 'pointer' }}
                     >
                         <Volume2 size={48} color="var(--primary)" style={{ marginBottom: '1rem' }} />
                         <h2 style={{ fontSize: '1.8rem' }}>Listen carefully...</h2>
@@ -314,7 +312,7 @@ const ExerciseRenderer = ({ exercise, feedback, selectedOption, setSelectedOptio
                         </p>
                         
                         {speakingProps.transcript && (
-                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '12px' }}>
+                            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={{ padding: '1rem', background: 'var(--surface)', borderRadius: '12px' }}>
                                 <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>You said: </span>
                                 <span style={{ fontWeight: 'bold' }}>"{speakingProps.transcript}"</span>
                             </motion.div>
@@ -337,9 +335,9 @@ const ExerciseRenderer = ({ exercise, feedback, selectedOption, setSelectedOptio
                                 padding: '1.25rem',
                                 textAlign: 'left',
                                 borderRadius: '16px',
-                                background: selectedOption === opt ? 'rgba(99, 102, 241, 0.1)' : 'rgba(255,255,255,0.03)',
+                                background: selectedOption === opt ? 'rgba(99, 102, 241, 0.1)' : 'var(--surface)',
                                 border: `2px solid ${selectedOption === opt ? 'var(--primary)' : 'var(--border)'}`,
-                                color: 'white',
+                                color: 'var(--text-main)',
                                 fontSize: '1.1rem',
                                 display: 'flex',
                                 justifyContent: 'space-between'
@@ -366,7 +364,7 @@ const ExerciseRenderer = ({ exercise, feedback, selectedOption, setSelectedOptio
                         border: 'none',
                         borderBottom: `3px solid var(--primary)`,
                         fontSize: '1.8rem',
-                        color: 'white',
+                        color: 'var(--input-color)',
                         padding: '1rem',
                         textAlign: 'center',
                         outline: 'none'
@@ -380,7 +378,7 @@ const ExerciseRenderer = ({ exercise, feedback, selectedOption, setSelectedOptio
                         <strong>{feedback.correct ? 'Correct!' : 'Correction:'}</strong>
                         {feedback.score !== undefined && <span>Accuracy: {feedback.score}%</span>}
                     </div>
-                    <p style={{ marginTop: '0.5rem', color: 'white' }}><SmartText>{exercise.explanation}</SmartText></p>
+                    <p style={{ marginTop: '0.5rem', color: 'var(--text-main)' }}><SmartText>{exercise.explanation}</SmartText></p>
                 </motion.div>
             )}
 

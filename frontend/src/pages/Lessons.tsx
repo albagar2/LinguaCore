@@ -7,6 +7,8 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SmartText from '../components/SmartText';
+import Spinner from '../components/Spinner';
+import PageHeader from '../components/PageHeader';
 
 const Lessons: React.FC = () => {
   const [lessons, setLessons] = useState<any[]>([]);
@@ -30,23 +32,18 @@ const Lessons: React.FC = () => {
     (l.title.toLowerCase().includes(search.toLowerCase()) || l.description.toLowerCase().includes(search.toLowerCase()))
   );
 
-  if (loading) return (
-    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10rem' }}>
-      <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }} style={{ border: '4px solid var(--border)', borderTop: '4px solid var(--primary)', borderRadius: '50%', width: '40px', height: '40px' }} />
-    </div>
-  );
+  if (loading) return <Spinner />;
 
   return (
     <div style={{ paddingBottom: '10rem' }}>
-      <header style={{ marginBottom: '4rem', textAlign: 'center' }}>
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
-           <span style={{ color: 'var(--primary)', fontWeight: '800', letterSpacing: '3px', fontSize: '0.75rem', textTransform: 'uppercase' }}>CURRICULUM ENGINE</span>
-           <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', marginTop: '0.75rem' }}>Precision <span className="gradient-text">Learning.</span></h1>
-           <Link to="/immersion" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.75rem', marginTop: '2rem', padding: '1rem 2.5rem', background: 'rgba(99, 102, 241, 0.1)', border: '1px solid var(--primary)', borderRadius: '16px', color: 'var(--primary)', fontWeight: '800' }}>
-               <Film size={20} fill="var(--primary)" /> EXPLORE CINEMATIC LIBRARY
-           </Link>
-        </motion.div>
-      </header>
+      <PageHeader 
+        title="Precision Learning."
+        badge="CURRICULUM ENGINE"
+      >
+        <Link to="/immersion" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.75rem', padding: '1rem 2.5rem', background: 'rgba(99, 102, 241, 0.1)', border: '1px solid var(--primary)', borderRadius: '16px', color: 'var(--primary)', fontWeight: '800' }}>
+            <Film size={20} fill="var(--primary)" /> EXPLORE CINEMATIC LIBRARY
+        </Link>
+      </PageHeader>
 
       {/* Controls Bar */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4rem' }}>
@@ -59,7 +56,7 @@ const Lessons: React.FC = () => {
                     padding: '0.6rem 1.25rem',
                     borderRadius: '12px',
                     fontSize: '0.85rem',
-                    background: filter === cat ? 'var(--primary)' : 'rgba(255,255,255,0.03)',
+                    background: filter === cat ? 'var(--primary)' : 'var(--surface)',
                     color: filter === cat ? 'white' : 'var(--text-muted)',
                     border: filter === cat ? '1px solid var(--primary)' : '1px solid var(--border)',
                   }}
@@ -77,8 +74,8 @@ const Lessons: React.FC = () => {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 style={{ 
-                    width: '100%', padding: '0.8rem 1rem 0.8rem 3rem', background: 'var(--glass)', 
-                    border: '1px solid var(--border)', borderRadius: '14px', color: 'white', outline: 'none'
+                    width: '100%', padding: '0.8rem 1rem 0.8rem 3rem', background: 'var(--input-bg)', 
+                    border: '1px solid var(--border)', borderRadius: '14px', color: 'var(--input-color)', outline: 'none'
                 }}
               />
           </div>
@@ -117,7 +114,7 @@ const Lessons: React.FC = () => {
                     </div>
                 </div>
                 
-                <h3 style={{ fontSize: '1.6rem', marginBottom: '1rem', letterSpacing: '-0.02em' }}><SmartText>{lesson.title}</SmartText></h3>
+                <h3 style={{ fontSize: '1.6rem', marginBottom: '1rem', letterSpacing: '-0.02em', color: 'var(--text-main)' }}><SmartText>{lesson.title}</SmartText></h3>
                 <p style={{ color: 'var(--text-muted)', fontSize: '1rem', marginBottom: '2.5rem', lineHeight: '1.6', height: '3.2rem', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
                     <SmartText>{lesson.description}</SmartText>
                 </p>
@@ -162,8 +159,8 @@ const CategoryIcon = ({ category }: { category: string }) => {
 
 const Tag = ({ label }: { label: string }) => (
   <span style={{ 
-    background: 'rgba(255,255,255,0.05)', 
-    color: 'var(--text-main)', 
+    background: 'var(--tag-bg)', 
+    color: 'var(--tag-color)', 
     padding: '0.4rem 0.8rem', 
     borderRadius: '8px', 
     fontSize: '0.7rem', 

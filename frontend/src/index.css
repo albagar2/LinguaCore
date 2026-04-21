@@ -8,25 +8,53 @@
   --danger: #f43f5e;
   --warning: #f59e0b;
   
-  /* Dark Theme */
+  /* Dark Theme (default) */
   --bg: #020617;
   --card-bg: rgba(15, 23, 42, 0.4);
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
   --border: rgba(255, 255, 255, 0.08);
   --glass-shine: rgba(255, 255, 255, 0.05);
+
+  /* Semantic surface tokens (dark) */
+  --surface: rgba(255, 255, 255, 0.04);
+  --surface-alt: rgba(255, 255, 255, 0.02);
+  --surface-hover: rgba(255, 255, 255, 0.07);
+  --input-bg: rgba(255, 255, 255, 0.04);
+  --input-color: #f8fafc;
+  --tag-bg: rgba(255, 255, 255, 0.06);
+  --tag-color: #cbd5e1;
+  --notification-bg: #090e1a;
+  --notification-border: rgba(99, 102, 241, 0.6);
+  --notification-shadow: 0 30px 70px rgba(0, 0, 0, 0.9);
+  --icon-bg: rgba(255, 255, 255, 0.05);
+  --progress-track: rgba(255, 255, 255, 0.05);
   
   --transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 body.light-theme {
-  --bg: #f1f5f9; /* Soft Slate Grey for better card separation */
+  --bg: #eef2f7;
   --card-bg: #ffffff;
   --text-main: #0f172a;
-  --text-muted: #334155; /* Darker muted text for high contrast */
-  --border: rgba(0, 0, 0, 0.08); /* More visible border */
-  --glass-shine: rgba(255, 255, 255, 0.9);
-  --shadow-premium: 0 10px 30px -5px rgba(0, 0, 0, 0.06);
+  --text-muted: #475569;   /* AAA contrast on white */
+  --border: rgba(0, 0, 0, 0.12);
+  --glass-shine: rgba(255, 255, 255, 0.95);
+  --shadow-premium: 0 10px 30px -5px rgba(0, 0, 0, 0.08);
+
+  /* Semantic surface tokens (light) */
+  --surface: rgba(0, 0, 0, 0.04);
+  --surface-alt: rgba(0, 0, 0, 0.025);
+  --surface-hover: rgba(99, 102, 241, 0.07);
+  --input-bg: #ffffff;
+  --input-color: #0f172a;
+  --tag-bg: rgba(15, 23, 42, 0.07);
+  --tag-color: #1e293b;
+  --notification-bg: #ffffff;
+  --notification-border: rgba(99, 102, 241, 0.35);
+  --notification-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+  --icon-bg: rgba(0, 0, 0, 0.05);
+  --progress-track: rgba(0, 0, 0, 0.07);
 }
 
 body.light-theme {
@@ -59,10 +87,11 @@ body {
 }
 
 /* Typography Enhancements */
-h1, h2, h3, h4 {
+h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.04em;
   font-weight: 800;
   line-height: 1.1;
+  color: var(--text-main);
 }
 
 /* Premium Buttons */
@@ -177,7 +206,7 @@ body.light-theme .glass-card:hover {
 .container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 4rem;
+  padding: 0;
 }
 
 /* Animations */
@@ -213,22 +242,31 @@ body.light-theme .glass-card:hover {
 
 /* Form Controls */
 input, select, textarea {
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--input-bg);
     border: 1px solid var(--border);
     border-radius: 16px;
     padding: 1rem 1.5rem;
-    color: var(--text-main);
+    color: var(--input-color);
     transition: var(--transition);
     outline: none;
 }
 
+input::placeholder, textarea::placeholder {
+    color: var(--text-muted);
+    opacity: 0.7;
+}
+
 input:focus {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--input-bg);
     border-color: var(--primary);
     box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
 }
 
+@media (max-width: 1024px) {
+    main.container { padding: 2rem 2.5rem !important; }
+}
+
 @media (max-width: 768px) {
-    .container { padding: 0 1.5rem; }
-    .glass-card { padding: 2rem; border-radius: 24px; }
+    main.container { padding: 1.5rem !important; }
+    .glass-card { padding: 1.75rem; border-radius: 24px; }
 }

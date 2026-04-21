@@ -9,6 +9,7 @@ import api from '../services/api';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 import SmartText from '../components/SmartText';
+import Spinner from '../components/Spinner';
 
 const Dashboard: React.FC = () => {
   // Estado global de la sesión del usuario
@@ -130,31 +131,27 @@ const Dashboard: React.FC = () => {
     });
   };
 
-  if (loading) return (
-    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '10rem' }}>
-        <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }} style={{ border: '4px solid var(--border)', borderTop: '4px solid var(--primary)', borderRadius: '50%', width: '40px', height: '40px' }} />
-    </div>
-  );
+  if (loading) return <Spinner />;
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', paddingBottom: '10rem' }}>
-      <header style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '3rem 0 10rem' }}>
+      <header style={{ marginBottom: '4rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem' }}>
         <div>
-            <h1 style={{ fontSize: '2.8rem', fontWeight: '800', letterSpacing: '-1px' }}>Welcome back, <span className="gradient-text">{user?.name}</span>!</h1>
+            <h1 style={{ fontSize: '2.8rem', fontWeight: '800', letterSpacing: '-1px', marginBottom: '0.6rem' }}>Welcome back, <span className="gradient-text">{user?.name}</span>!</h1>
             <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>You're in the top 5% of learners this week. Keep going!</p>
         </div>
-        <div style={{ textAlign: 'right' }}>
-            <button onClick={handleDownloadCertificate} className="btn-primary" style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#047857', border: '1px solid #10b981', padding: '0.75rem 1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem', marginLeft: 'auto' }}>
+        <div style={{ textAlign: 'right', flexShrink: 0 }}>
+            <button onClick={handleDownloadCertificate} className="btn-primary" style={{ background: 'linear-gradient(135deg, #059669 0%, #10b981 100%)', color: '#ffffff', border: 'none', boxShadow: '0 8px 20px -5px rgba(16, 185, 129, 0.45)', padding: '0.75rem 1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem', marginLeft: 'auto' }}>
                 <Download size={18} /> GENERATE INTERNAL SEAL
             </button>
-            <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginTop: '0.5rem', maxWidth: '200px', marginLeft: 'auto' }}>
+            <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginTop: '0.6rem', maxWidth: '220px', marginLeft: 'auto', lineHeight: '1.5' }}>
                 *LinguaCore Internal Progress Reward. Not an official academic degree.
             </p>
         </div>
       </header>
 
-      {/* Grid de Estadísticas Principales: Streak, XP, Rango, Precisión y Multimedia */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
+      {/* Grid de Estadísticas Principales */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.75rem', marginBottom: '4rem' }}>
         <StatCard 
             icon={<Flame color="#f59e0b" fill="#f59e0b" />} 
             value={`${user?.streak || 0} Days`} 
@@ -187,9 +184,9 @@ const Dashboard: React.FC = () => {
         />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1.8fr 1.2fr', gap: '2.5rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1.8fr 1.2fr', gap: '3rem' }}>
         
-        <div style={{ display: 'grid', gap: '2.5rem' }}>
+        <div style={{ display: 'grid', gap: '3rem' }}>
             {/* Análisis Gráfico de Maestría por Categoría */}
             <div className="glass-card" style={{ padding: '2rem' }}>
                 <h3 style={{ marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}><Target size={20} color="var(--primary)" /> Mastery Analysis</h3>
@@ -231,22 +228,37 @@ const Dashboard: React.FC = () => {
                     {stats?.lessons?.map((lesson: any) => (
                         <Link key={lesson.id} to={`/lessons/${lesson.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                             <motion.div 
-                                whileHover={{ x: 10, background: 'rgba(255,255,255,0.03)' }}
+                                whileHover={{ x: 8, background: 'var(--surface-hover)' }}
                                 className="glass-card" 
-                                style={{ padding: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                                style={{ 
+                                    padding: '1.25rem 1.5rem', 
+                                    display: 'flex', 
+                                    justifyContent: 'space-between', 
+                                    alignItems: 'center',
+                                    borderRadius: '20px',
+                                    border: '1px solid var(--border)'
+                                }}
                             >
-                                <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-                                    <div style={{ width: '50px', height: '50px', borderRadius: '12px', background: 'rgba(99, 102, 241, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--primary)' }}>
-                                        <BookOpen size={24} />
+                                <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center' }}>
+                                    <div style={{ 
+                                        width: '48px', height: '48px', borderRadius: '12px', 
+                                        background: 'rgba(99, 102, 241, 0.12)', 
+                                        border: '1px solid rgba(99, 102, 241, 0.2)',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                                        color: 'var(--primary)', flexShrink: 0
+                                    }}>
+                                        <BookOpen size={22} />
                                     </div>
                                     <div>
-                                        <h4 style={{ marginBottom: '0.25rem', fontSize: '1.1rem' }}><SmartText>{lesson.title || "Lesson"}</SmartText></h4>
-                                        <div style={{ display: 'flex', gap: '0.75rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+                                        <h4 style={{ marginBottom: '0.3rem', fontSize: '1rem', fontWeight: '700', color: 'var(--text-main)' }}>
+                                            <SmartText>{lesson.title || "Lesson"}</SmartText>
+                                        </h4>
+                                        <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: '600', letterSpacing: '0.02em' }}>
                                             <SmartText>{`${lesson.category || 'General'} • ${lesson.level || 'All'}`}</SmartText>
                                         </div>
                                     </div>
                                 </div>
-                                <ChevronRight size={20} color="var(--text-muted)" />
+                                <ChevronRight size={18} color="var(--text-muted)" style={{ flexShrink: 0 }} />
                             </motion.div>
                         </Link>
                     ))}
@@ -254,20 +266,20 @@ const Dashboard: React.FC = () => {
             </section>
         </div>
 
-        <aside style={{ display: 'grid', gap: '2.5rem', alignContent: 'start' }}>
+        <aside style={{ display: 'grid', gap: '2rem', alignContent: 'start' }}>
             {/* Mastery Card */}
             <div className="glass-card" style={{ padding: '2rem' }}>
                 <h3 style={{ marginBottom: '1.5rem', fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                     <BrainCircuit size={20} color="var(--primary)" /> Mastery Stats
                 </h3>
-                <div style={{ display: 'grid', gap: '1.25rem' }}>
+                <div style={{ display: 'grid', gap: '1.5rem' }}>
                     <TaskItem label="Words Mastered" done={(analytics?.totalWords || 0) > 0} />
                     <TaskItem label="Curriculum Progress" done={(analytics?.totalLessons || 0) > 0} />
                     <TaskItem label="Global Ranking" done={leaderboard.some(l => l.id === user?.id)} />
                 </div>
                 <div style={{ marginTop: '2rem', paddingTop: '2rem', borderTop: '1px solid var(--border)' }}>
-                    <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Level Progress: {user?.xp || 0} / 5000 XP</p>
-                    <div style={{ height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden' }}>
+                    <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>Level Progress: {user?.xp || 0} / 5000 XP</p>
+                    <div style={{ height: '8px', background: 'var(--progress-track)', borderRadius: '4px', overflow: 'hidden' }}>
                         <motion.div 
                             initial={{ width: 0 }} 
                             animate={{ width: `${Math.min(((user?.xp || 0) / 5000) * 100, 100)}%` }} 
@@ -280,7 +292,7 @@ const Dashboard: React.FC = () => {
             {/* Achievements Section */}
             <div className="glass-card" style={{ padding: '2rem' }}>
                 <h3 style={{ fontSize: '1.2rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}><Award size={20} color="var(--accent)" /> Achievements</h3>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
                     <BadgeCard icon="🔥" label="7 Days" earned={(user?.streak || 0) >= 7} />
                     <BadgeCard icon="🧠" label="Grammar Master" earned={(analytics?.totalLessons || 0) >= 3} />
                     <BadgeCard icon="🎧" label="Perfect Ear" earned={false} />
@@ -311,7 +323,7 @@ const Dashboard: React.FC = () => {
                 <h3 style={{ marginBottom: '1.5rem', fontSize: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                     <Users size={20} color="#f59e0b" /> Leaderboard
                 </h3>
-                <div style={{ display: 'grid', gap: '1rem' }}>
+                <div style={{ display: 'grid', gap: '0.5rem' }}>
                     {leaderboard.map((item, index) => (
                         <LeaderboardItem 
                             key={item.id} 
@@ -341,7 +353,7 @@ const PathNode = ({ title, status }: { title: string, status: 'completed' | 'act
         }} />
         <div style={{ 
             flex: 1, padding: '1rem', borderRadius: '12px', 
-            background: status === 'active' ? 'rgba(99, 102, 241, 0.1)' : 'rgba(255,255,255,0.02)',
+            background: status === 'active' ? 'rgba(99, 102, 241, 0.1)' : 'var(--surface-alt)',
             border: `1px solid ${status === 'active' ? 'var(--primary)' : 'transparent'}`
         }}>
             <span style={{ fontWeight: 'bold' }}>{title}</span>
@@ -354,30 +366,30 @@ const StatCard = ({ icon, value, label, trend }: any) => (
   <motion.div 
     whileHover={{ y: -5 }}
     className="glass-card" 
-    style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '1.25rem', position: 'relative' }}
+    style={{ padding: '1.75rem', display: 'flex', alignItems: 'center', gap: '1.5rem', position: 'relative' }}
   >
-    <div style={{ padding: '1rem', borderRadius: '14px', background: 'rgba(255,255,255,0.02)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div style={{ padding: '1rem', borderRadius: '14px', background: 'var(--surface)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
         {icon}
     </div>
     <div>
-        <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>{label}</p>
-        <h3 style={{ fontSize: '1.6rem', fontWeight: 'bold' }}>{value}</h3>
-        <span style={{ fontSize: '0.7rem', color: 'var(--accent)', fontWeight: 'bold' }}>{trend}</span>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '0.2rem' }}>{label}</p>
+        <h3 style={{ fontSize: '1.6rem', fontWeight: 'bold', lineHeight: 1 }}>{value}</h3>
+        <span style={{ fontSize: '0.7rem', color: 'var(--accent)', fontWeight: 'bold', marginTop: '0.3rem', display: 'block' }}>{trend}</span>
     </div>
   </motion.div>
 );
 
 const BadgeCard = ({ icon, label, earned }: any) => (
     <div style={{ 
-        padding: '1rem 0.5rem', 
+        padding: '1.25rem 0.75rem', 
         borderRadius: '16px', 
-        background: earned ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.01)', 
+        background: earned ? 'var(--surface)' : 'var(--surface-alt)', 
         border: `1px solid ${earned ? 'rgba(99,102,241,0.2)' : 'var(--border)'}`,
         textAlign: 'center',
-        opacity: earned ? 1 : 0.4
+        opacity: earned ? 1 : 0.45
     }}>
-        <div style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>{icon}</div>
-        <div style={{ fontSize: '0.7rem', fontWeight: 'bold' }}>{label}</div>
+        <div style={{ fontSize: '1.8rem', marginBottom: '0.5rem' }}>{icon}</div>
+        <div style={{ fontSize: '0.72rem', fontWeight: 'bold', lineHeight: '1.3' }}>{label}</div>
     </div>
 );
 
@@ -386,26 +398,27 @@ const LeaderboardItem = ({ rank, name, xp, isUser }: any) => (
         display: 'flex', 
         justifyContent: 'space-between', 
         alignItems: 'center', 
-        padding: '0.75rem 1rem', 
+        padding: '0.875rem 1.1rem', 
         borderRadius: '12px', 
         background: isUser ? 'rgba(99, 102, 241, 0.1)' : 'transparent',
         border: isUser ? '1px solid var(--primary)' : '1px solid transparent'
     }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <span style={{ fontWeight: 'bold', color: rank === 1 ? '#f59e0b' : 'var(--text-muted)', width: '20px' }}>{rank}</span>
+            <span style={{ fontWeight: 'bold', color: rank === 1 ? '#f59e0b' : 'var(--text-muted)', width: '24px', fontSize: '0.9rem' }}>{rank}</span>
             <span style={{ fontWeight: isUser ? 'bold' : 'normal', fontSize: '0.9rem' }}>{name}</span>
         </div>
-        <span style={{ fontWeight: 'bold', fontSize: '0.8rem' }}>{xp} XP</span>
+        <span style={{ fontWeight: 'bold', fontSize: '0.8rem', color: 'var(--text-muted)' }}>{xp} XP</span>
     </div>
 );
 
 const TaskItem = ({ label, done }: { label: string, done: boolean }) => (
-    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', opacity: done ? 0.6 : 1 }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem', opacity: done ? 0.6 : 1, padding: '0.25rem 0' }}>
         <div style={{ 
-            width: '18px', height: '18px', borderRadius: '4px', 
+            width: '20px', height: '20px', borderRadius: '6px', 
             border: `2px solid ${done ? 'var(--accent)' : 'var(--border)'}`,
             background: done ? 'var(--accent)' : 'transparent',
-            display: 'flex', alignItems: 'center', justifyContent: 'center'
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            flexShrink: 0
         }}>
             {done && <Target size={12} color="white" />}
         </div>

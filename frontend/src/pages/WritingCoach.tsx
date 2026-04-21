@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, Sparkles, CheckCircle, RefreshCcw } from 'lucide-react';
+import PageHeader from '../components/PageHeader';
 
 const WritingCoach: React.FC = () => {
     // Estados para la gestión de la entrada de texto y el flujo de la IA
@@ -36,13 +37,11 @@ const WritingCoach: React.FC = () => {
 
     return (
         <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-            <header style={{ textAlign: 'center', marginBottom: '4rem' }}>
-                <div style={{ display: 'inline-flex', padding: '0.5rem 1.5rem', background: 'rgba(99, 102, 241, 0.1)', borderRadius: '30px', color: 'var(--primary)', fontWeight: 'bold', fontSize: '0.8rem', gap: '0.5rem', alignItems: 'center', marginBottom: '1.5rem' }}>
-                    <Sparkles size={16} /> AI POWERED
-                </div>
-                <h1 className="gradient-text" style={{ fontSize: '3rem', marginBottom: '1rem' }}>Writing Coach</h1>
-                <p style={{ color: 'var(--text-muted)' }}>Write anything in English and get instant feedback from our advanced AI.</p>
-            </header>
+      <PageHeader 
+        title="Writing Coach"
+        subtitle="Write anything in English and get instant feedback from our advanced AI."
+        badge={<><Sparkles size={16} /> AI POWERED</>}
+      />
 
             <div className="glass-card" style={{ padding: '2.5rem' }}>
                 <textarea 
@@ -52,10 +51,10 @@ const WritingCoach: React.FC = () => {
                     style={{
                         width: '100%',
                         height: '200px',
-                        background: 'rgba(255,255,255,0.02)',
+                        background: 'var(--input-bg)',
                         border: '1px solid var(--border)',
                         borderRadius: '16px',
-                        color: 'white',
+                        color: 'var(--input-color)',
                         padding: '1.5rem',
                         fontSize: '1.1rem',
                         resize: 'none',
@@ -108,7 +107,7 @@ const WritingCoach: React.FC = () => {
                                 <h4 style={{ fontSize: '1rem', color: 'var(--text-muted)', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '1px' }}>Suggestions</h4>
                                 <div style={{ display: 'grid', gap: '1rem' }}>
                                     {result.corrections.map((c: any, i: number) => (
-                                        <div key={i} style={{ padding: '1.25rem', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid var(--border)' }}>
+                                        <div key={i} style={{ padding: '1.25rem', background: 'var(--surface)', borderRadius: '12px', border: '1px solid var(--border)' }}>
                                             <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '0.5rem' }}>
                                                 <span style={{ color: 'var(--danger)', textDecoration: 'line-through', fontSize: '0.9rem' }}>{c.original}</span>
                                                 <Arrow />
@@ -122,7 +121,7 @@ const WritingCoach: React.FC = () => {
 
                             <div>
                                 <h4 style={{ fontSize: '1rem', color: 'var(--text-muted)', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '1px' }}>General Feedback</h4>
-                                <p style={{ lineHeight: '1.6', color: '#d1d5db' }}>{result.feedback}</p>
+                                <p style={{ lineHeight: '1.6', color: 'var(--text-muted)' }}>{result.feedback}</p>
                             </div>
                         </div>
                     </motion.div>

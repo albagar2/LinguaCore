@@ -69,7 +69,7 @@ const Navbar: React.FC = () => {
                 <div style={{ position: 'relative' }}>
                     <button 
                         onClick={() => { setShowNotifications(!showNotifications); setShowProfileMenu(false); }}
-                        style={{ background: 'rgba(255,255,255,0.05)', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-main)', position: 'relative' }}
+                        style={{ background: 'var(--icon-bg)', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-main)', position: 'relative' }}
                     >
                         <Bell size={18} />
                         {unreadCount > 0 && (
@@ -87,9 +87,9 @@ const Navbar: React.FC = () => {
                                 style={{ 
                                     position: 'absolute', top: '120%', right: 0, width: '320px', 
                                     padding: '1.25rem', zIndex: 1000, 
-                                    background: '#090e1a',
-                                    border: '1px solid rgba(99, 102, 241, 0.6)',
-                                    boxShadow: '0 30px 70px rgba(0,0,0,0.9)' 
+                                    background: 'var(--notification-bg)',
+                                    border: '1px solid var(--notification-border)',
+                                    boxShadow: 'var(--notification-shadow)' 
                                 }}
                             >
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
@@ -101,20 +101,20 @@ const Navbar: React.FC = () => {
                                         <motion.div 
                                             key={n.id} 
                                             onClick={() => handleMarkRead(n.id)}
-                                            whileHover={{ x: 5, background: n.read ? 'rgba(255,255,255,0.02)' : 'rgba(99, 102, 241, 0.12)' }}
+                                            whileHover={{ x: 5, background: n.read ? 'var(--surface-alt)' : 'var(--surface-hover)' }}
                                             style={{ 
                                                 display: 'flex', gap: '1rem', padding: '1rem', borderRadius: '14px', 
-                                                background: n.read ? 'rgba(255,255,255,0.01)' : 'rgba(99, 102, 241, 0.05)', 
-                                                border: n.read ? '1px solid rgba(255,255,255,0.02)' : '1px solid rgba(99,102,241,0.2)',
+                                                background: n.read ? 'var(--surface-alt)' : 'var(--surface)', 
+                                                border: n.read ? '1px solid var(--border)' : '1px solid rgba(99,102,241,0.25)',
                                                 cursor: 'pointer', transition: '0.3s',
-                                                opacity: n.read ? 0.5 : 1
+                                                opacity: n.read ? 0.55 : 1
                                             }}
                                         >
-                                            <div style={{ padding: '0.5rem', background: n.read ? 'rgba(255,255,255,0.05)' : 'rgba(99, 102, 241, 0.15)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                            <div style={{ padding: '0.5rem', background: n.read ? 'var(--icon-bg)' : 'rgba(99, 102, 241, 0.15)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                 {n.icon}
                                             </div>
                                             <div style={{ flex: 1 }}>
-                                                <p style={{ fontSize: '0.85rem', margin: 0, fontWeight: n.read ? '400' : '700', color: n.read ? '#94a3b8' : '#f8fafc', lineHeight: '1.4' }}>{n.text}</p>
+                                                <p style={{ fontSize: '0.85rem', margin: 0, fontWeight: n.read ? '400' : '700', color: n.read ? 'var(--text-muted)' : 'var(--text-main)', lineHeight: '1.4' }}>{n.text}</p>
                                                 <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', display: 'block', marginTop: '0.25rem' }}>{n.time}</span>
                                             </div>
                                         </motion.div>
@@ -133,7 +133,7 @@ const Navbar: React.FC = () => {
 
                 <button 
                     onClick={toggleTheme} 
-                    style={{ background: 'rgba(255,255,255,0.05)', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-main)' }}
+                    style={{ background: 'var(--icon-bg)', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-main)' }}
                 >
                     {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
                 </button>
@@ -141,7 +141,7 @@ const Navbar: React.FC = () => {
                 <div style={{ position: 'relative' }}>
                     <div 
                         onClick={() => { setShowProfileMenu(!showProfileMenu); setShowNotifications(false); }}
-                        style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '1rem', background: 'rgba(255,255,255,0.05)', padding: '0.5rem 1.25rem', borderRadius: '30px', border: '1px solid var(--border)', transition: '0.3s' }}
+                        style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '1rem', background: 'var(--icon-bg)', padding: '0.5rem 1.25rem', borderRadius: '30px', border: '1px solid var(--border)', transition: '0.3s' }}
                     >
                         <User size={18} color="var(--primary)" />
                         <span style={{ fontSize: '0.9rem', fontWeight: 'bold' }}>{user.name}</span>
@@ -172,7 +172,7 @@ const Navbar: React.FC = () => {
           <div style={{ display: 'flex', gap: '1rem' }}>
               <button 
                     onClick={toggleTheme} 
-                    style={{ background: 'rgba(255,255,255,0.05)', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-main)' }}
+                    style={{ background: 'var(--icon-bg)', width: '40px', height: '40px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-main)' }}
                 >
                     {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
               </button>

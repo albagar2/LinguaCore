@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import api from '../services/api';
 import { motion } from 'framer-motion';
-import { Search, Layers, Volume2, Sparkles, Zap } from 'lucide-react';
+import { Search, Volume2, Sparkles, Zap } from 'lucide-react';
 import { useTTS } from '../hooks/useTTS';
 import { Link } from 'react-router-dom';
+import Spinner from '../components/Spinner';
+import PageHeader from '../components/PageHeader';
 
 const Glossary: React.FC = () => {
   const [vocab, setVocab] = useState<any[]>([]);
@@ -26,22 +28,18 @@ const Glossary: React.FC = () => {
     (v.synonyms && v.synonyms.toLowerCase().includes(search.toLowerCase()))
   );
 
-  if (loading) return <div style={{ textAlign: 'center', marginTop: '10rem' }}>
-    <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1 }} style={{ border: '4px solid var(--border)', borderTop: '4px solid var(--primary)', borderRadius: '50%', width: '40px', height: '40px', margin: '0 auto' }} />
-  </div>;
+  if (loading) return <Spinner />;
 
   return (
     <div style={{ paddingBottom: '5rem' }}>
-      <header style={{ marginBottom: '4rem', textAlign: 'center' }}>
-        <h1 className="gradient-text" style={{ fontSize: '3.5rem', marginBottom: '1rem' }}>Vocabulary Glossary</h1>
-        <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem' }}>Deepen your knowledge with meanings, synonyms, and examples.</p>
-        
-        <div style={{ marginTop: '2.5rem', display: 'flex', justifyContent: 'center' }}>
-            <Link to="/flashcards" className="btn-primary" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '1rem 2.5rem' }}>
-                <Sparkles size={20} /> START STUDY SPRINT
-            </Link>
-        </div>
-      </header>
+      <PageHeader 
+        title="Vocabulary Glossary"
+        subtitle="Deepen your knowledge with meanings, synonyms, and examples."
+      >
+        <Link to="/flashcards" className="btn-primary" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '1rem 2.5rem' }}>
+            <Sparkles size={20} /> START STUDY SPRINT
+        </Link>
+      </PageHeader>
 
       <div style={{ position: 'relative', maxWidth: '600px', margin: '0 auto 5rem' }}>
         <Search style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
@@ -53,13 +51,13 @@ const Glossary: React.FC = () => {
           style={{
             width: '100%',
             padding: '1.25rem 1.25rem 1.25rem 3.5rem',
-            background: 'var(--card-bg)',
+            background: 'var(--input-bg)',
             border: '1px solid var(--border)',
             borderRadius: '20px',
-            color: 'white',
+            color: 'var(--input-color)',
             fontSize: '1.1rem',
             outline: 'none',
-            boxShadow: '0 10px 30px rgba(0,0,0,0.3)'
+            boxShadow: '0 10px 30px rgba(0,0,0,0.1)'
           }}
         />
       </div>
@@ -79,7 +77,7 @@ const Glossary: React.FC = () => {
                     <span style={{ fontSize: '1.8rem', fontWeight: '800', color: 'var(--primary)', display: 'block', letterSpacing: '-0.5px' }}>{item.word}</span>
                     <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
                         <span style={{ background: 'rgba(99, 102, 241, 0.1)', color: 'var(--primary)', fontSize: '0.7rem', padding: '0.2rem 0.6rem', borderRadius: '6px', fontWeight: 'bold' }}>{item.category}</span>
-                        <span style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--text-muted)', fontSize: '0.7rem', padding: '0.2rem 0.6rem', borderRadius: '6px', fontWeight: 'bold' }}>{item.level}</span>
+                        <span style={{ background: 'var(--tag-bg)', color: 'var(--tag-color)', fontSize: '0.7rem', padding: '0.2rem 0.6rem', borderRadius: '6px', fontWeight: 'bold' }}>{item.level}</span>
                     </div>
                 </div>
                 <button 
@@ -106,7 +104,7 @@ const Glossary: React.FC = () => {
             )}
 
             {item.example && (
-              <div style={{ marginTop: 'auto', borderLeft: '3px solid var(--primary)', paddingLeft: '1.25rem', background: 'rgba(255,255,255,0.02)', padding: '1.25rem', borderRadius: '0 16px 16px 0' }}>
+              <div style={{ marginTop: 'auto', borderLeft: '3px solid var(--primary)', paddingLeft: '1.25rem', background: 'var(--surface-alt)', padding: '1.25rem', borderRadius: '0 16px 16px 0' }}>
                 <p style={{ fontSize: '0.95rem', color: 'var(--text-muted)', fontStyle: 'italic', lineHeight: '1.5' }}>"{item.example}"</p>
               </div>
             )}
