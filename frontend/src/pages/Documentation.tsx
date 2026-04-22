@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { FileText, Terminal, User, ArrowLeft, RefreshCw } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Terminal, User, RefreshCw } from 'lucide-react';
 import api from '../services/api';
 import ReactMarkdown from 'react-markdown';
 import { toast } from 'sonner';

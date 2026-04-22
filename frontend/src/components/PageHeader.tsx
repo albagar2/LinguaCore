@@ -8,6 +8,7 @@ interface PageHeaderProps {
   centered?: boolean;
   className?: string;
   children?: React.ReactNode;
+  compact?: boolean;
 }
 
 /**
@@ -19,11 +20,12 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   subtitle, 
   badge, 
   centered = true, 
-  children 
+  children,
+  compact = false
 }) => {
   return (
     <header style={{ 
-      marginBottom: '4rem', 
+      marginBottom: compact ? '2rem' : '4rem', 
       textAlign: centered ? 'center' : 'left',
       display: 'flex',
       flexDirection: 'column',
@@ -45,7 +47,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
             fontSize: '0.75rem', 
             gap: '0.5rem', 
             alignItems: 'center', 
-            marginBottom: '1.5rem',
+            marginBottom: compact ? '0.75rem' : '1.5rem',
             letterSpacing: '2px',
             textTransform: 'uppercase',
             border: '1px solid var(--border)'
@@ -55,7 +57,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
         )}
         
         <h1 style={{ 
-          fontSize: 'clamp(2.5rem, 5vw, 4rem)', 
+          fontSize: compact ? 'clamp(1.8rem, 4vw, 2.5rem)' : 'clamp(2.5rem, 5vw, 4rem)', 
           marginBottom: subtitle ? '1rem' : '0',
           lineHeight: '1.1'
         }}>
@@ -80,11 +82,9 @@ const PageHeader: React.FC<PageHeaderProps> = ({
           </p>
         )}
         
-        {children && (
-          <div style={{ marginTop: '2.5rem' }}>
+          <div style={{ marginTop: compact ? '1.5rem' : '2.5rem' }}>
             {children}
           </div>
-        )}
       </motion.div>
     </header>
   );

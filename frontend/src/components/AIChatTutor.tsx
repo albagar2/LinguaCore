@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, X, Send, Bot, Sparkles, Wand2, BookOpen, Volume2 } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 
 const AIChatTutor: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,6 +10,14 @@ const AIChatTutor: React.FC = () => {
   ]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [lastBotOffer, setLastBotOffer] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -28,34 +37,81 @@ const AIChatTutor: React.FC = () => {
     // AI Logic Engine (Personalized & Professional)
     setTimeout(() => {
       let response = "";
+      let offer: string | null = null;
       const msg = messageText.toLowerCase();
 
-      if (msg.includes('check') || msg.includes('email') || msg.includes('writing') || msg.includes('escribir')) {
-        response = "📝 Writing Analysis: Your text is technically correct, but we can make it more impactful. I suggest using 'I am delighted to...' instead of 'I am happy to...'. This small change increases your professional tone by 40%.";
-      } else if (msg.includes('traducir') || msg.includes('traduccion') || msg.includes('no entiendo') || msg.includes('translate') || msg.includes('spanish') || msg.includes('español')) {
-        response = "🌍 Traduciendo para ti: ¡Claro! Para aprender desde cero lo ideal es enfocarse en el Alfabeto, los Números y el verbo 'To Be'. Te recomendaba visitar la lección 'Identity'. ¿Te gustaría que sigamos hablando en español e inglés para que entiendas mejor?";
+      // Handling Contextual Affirmations (Yes, Do it, etc.)
+      const isAffirmative = msg === 'si' || msg === 'sí' || msg === 'hazlo' || msg === 'claro' || msg === 'yes' || msg === 'do it' || msg === 'ok' || msg === 'okay';
+      
+      if (isAffirmative && lastBotOffer) {
+        if (lastBotOffer === 'explore_glossary') {
+            response = "📚 **Opening Glossary...** He activado el modo de exploración. Puedes buscar términos como *'Ubiquitous'*, *'Ameliorate'* o *'Fathom'*. ¿Por cuál te gustaría empezar? Soy experto en términos de nivel C1.";
+            offer = null;
+        } else if (lastBotOffer === 'mock_interview') {
+            response = "🎙️ **Interview Mode Start:** 'Great to have you here. Tell me, how do you handle high-pressure situations at work?' (Hint: Use phrases like 'I thrive under pressure' or 'I prioritize tasks effectively').";
+            offer = null;
+        }
+      } 
+      // Detection of "Translation" or "Meaning" request
+      else if (msg.includes('significa') || msg.includes('meaning') || msg.includes('que es') || msg.includes('qué es') || msg.includes('what is') || msg.includes('define')) {
+        if (msg.includes('boil') || msg.includes('boll') || msg.includes('hervir')) {
+            response = "🔥 **Boiling (Hervir):** Significa calentar un líquido hasta que burbujea fuertemente (100°C). En la cocina, es una técnica más agresiva que el *simmering*. \n*Example: 'The water is boiling!'*";
+        } else if (msg.includes('simmer') || msg.includes('fuego lento')) {
+            response = "🍲 **Simmering (Fuego lento):** Es cocinar justo por debajo del punto de ebullición (unos 94°C). Es ideal para salsas complejas.";
+        } else if (msg.includes('grasp') || msg.includes('fathom') || msg.includes('entender')) {
+            response = "🧠 **Grasp / Fathom:** Ambos significan entender algo complejo. 'Grasp' es más común, mientras que **'Fathom'** es más literario y avanzado (C1). \n*Example: 'I can finally grasp the concept of quantum physics'.*";
+        } else if (msg.includes('hedging') || msg.includes('suavizar')) {
+            response = "🛡️ **Hedging:** Es usar palabras diplomáticas (perhaps, slightly) para no sonar agresivo. Vital en negocios.";
+        } else if (msg.includes('upskilling') || msg.includes('mejora')) {
+            response = "📈 **Upskilling:** El proceso de aprender nuevas habilidades para estar al día en tu carrera profesional. ¡Justo lo que estás haciendo en LinguaCore!";
+        } else if (msg.includes('collocation')) {
+            response = "🔗 **Collocation:** Palabras que suelen ir juntas de forma natural (ej: 'make a decision' en lugar de 'do a decision').";
+        } else if (msg.includes('ubiquitous') || msg.includes('ubicuo')) {
+            response = "🌍 **Ubiquitous:** Algo que está en todas partes al mismo tiempo. Es un término formal avanzado. *Example: 'Smartphone technology is now ubiquitous'.*";
+        } else if (msg.includes('ameliorate') || msg.includes('mejorar')) {
+            response = "📈 **Ameliorate:** Es un término muy formal para decir 'hacer algo mejor'. Se asocia con mejorar situaciones difíciles. \n*Example: 'The new laws were designed to ameliorate the living conditions'.*";
+        } else if (msg.includes('left') || msg.includes('izquierda') || msg.includes('dejó')) {
+            response = "🧭 **Left:** Tiene dos significados principales: \n1. **Dirección:** Lo opuesto a 'Right' (izquierda). \n2. **Verbo:** Pasado de 'Leave' (irse o dejar). \n*Example: 'He turned left' o 'She left the office at 5 PM'.*";
+        } else if (msg.includes('right') || msg.includes('derecha')) {
+            response = "🧭 **Right:** \n1. **Dirección:** Derecha. \n2. **Correcto:** Opuesto a 'Wrong'. \n3. **Derecho:** Como en 'Human Rights'.";
+        } else if (msg.includes('lift') || msg.includes('ascensor')) {
+            response = "🏢 **Lift (UK):** Es la palabra británica para 'Elevator' (ascensor).";
+        } else if (msg.includes('flat') || msg.includes('apartamento')) {
+            response = "🏠 **Flat (UK):** Es la palabra británica para 'Apartment' (apartamento/piso).";
+        } else if (msg.includes('pencil in') || msg.includes('agendar')) {
+            response = "✏️ **Pencil in:** Agendar una cita o reunión de forma provisional, sabiendo que podría cambiar. \n*Example: 'Let's pencil in a meeting for Friday'.*";
+        } else if (msg.includes('under the pump')) {
+            response = "😰 **Under the pump:** Estar bajo mucha presión o tener mucho trabajo. Muy común en entornos de oficina avanzados.";
+        } else if (msg.includes('passive') || msg.includes('pasiva')) {
+            response = "🔄 **Passive Voice:** Resalta el objeto. 'The cake was eaten'. ¿Quieres ver cómo se forma el pasado pasivo?";
+        } else {
+            response = "🔍 Ese término suena interesante. Mi base de datos lo asocia con las lecciones de nivel avanzado. ¿Te gustaría que exploremos juntos el **Glosario de Vocabulario** para encontrar más ejemplos?";
+            offer = "explore_glossary";
+        }
+      } 
+      // Handling "I don't understand" (No entiendo)
+      else if (msg.includes('no entiendo') || msg.includes('no comprende') || msg.includes('don\'t understand')) {
+        response = "💡 ¡Tranquilo/a! Aprender es un proceso. ¿Es una **palabra** lo que te confunde o la **forma** en la que lo explico? Si me dices la palabra, te prometo una traducción clara.";
+      }
+      // Existing handlers...
+      else if (msg.includes('check') || msg.includes('email') || msg.includes('writing') || msg.includes('escribir')) {
+        response = "📝 Writing Analysis: Your text is technically correct, but we can make it more impactful. I suggest using 'I am delighted to...' instead of 'I am happy to...'.";
+      } else if (msg.includes('traducir') || msg.includes('traduccion') || msg.includes('translate') || msg.includes('spanish') || msg.includes('español')) {
+        response = "🌍 **Translation Mode:** ¡Claro! Pídeme traducir términos. ¿Sabías que 'Pencil in' significa agendar algo de forma provisional?";
       } else if (msg.includes('video') || msg.includes('pelicula') || msg.includes('cine')) {
-        response = "🎬 Cinematic Library: ¡Buena idea! He preparado videos interactivos para practicar el abecedario y los números en nuestro 'Immersion Studio'. Puedes ir allí desde el menú principal para verlos con subtítulos inteligentes.";
+        response = "🎬 Cinematic Library: Visita el 'Immersion Studio' para ver contenido real con subtítulos inteligentes.";
       } else if (msg.includes('alfabeto') || msg.includes('abecedario') || msg.includes('alphabet')) {
-        response = "🔤 The Alphabet: En inglés, la pronunciación cambia mucho. Por ejemplo: A (ei), B (bi), C (si). ¡Es la base de todo! He añadido un video de práctica en el estudio de inmersión para que escuches cada letra. ¿Te gustaría ver los números también?";
+        response = "🔤 The Alphabet: A (ei), B (bi), C (si). ¿Quieres practicar el deletreo de una palabra difícil?";
       } else if (msg.includes('numero') || msg.includes('number') || msg.includes('contar')) {
-        response = "🔢 Numbers Mastery: 1 (One), 2 (Two), 3 (Three)... Hasta el 12 son únicos, luego del 13 al 19 terminan en -teen. ¿Sabías que el 0 se puede decir 'zero', 'oh' o 'nought'?";
-      } else if (msg.includes('tiempo') || msg.includes('tense')) {
-        response = "⏳ Verb Tenses: \n• Present: I am/do.\n• Past: I was/did.\n• Future: I will be/do.\n¡El inglés tiene 12 tiempos principales! ¿Quieres empezar por el pasado o el presente?";
-      } else if (msg.includes('to be') || msg.includes('ser') || msg.includes('estar')) {
-        response = "✨ Foundation Pillar: The verb 'To Be' is essential. It has three forms in present: AM (for I), IS (for he/she/it), and ARE (for you/we/they). Example: 'I am a student'. Do you want to see other tenses (tiempos verbales)?";
-      } else if (msg.includes('grammar') || msg.includes('explain') || msg.includes('gramatica') || msg.includes('explicar')) {
-        response = "💡 Grammar Intelligence: You're asking about grammar! A key concept is the 'Subjunctive Mood' for advanced, or 'Word Order' for beginners. In English, we usually follow Subject + Verb + Object. Would you like a specific example?";
-      } else if (msg.includes('principio') || msg.includes('begin') || msg.includes('start')) {
-        response = "🌱 Starting Journey: Excellent! To learn from the beginning, we should focus on the Alphabet, Numbers, and 'The Verb To Be'. Check out our 'Identity' lesson in the curriculum. I can also practice basic greetings with you now!";
-      } else if (msg.includes('pronounce') || msg.includes('speak') || msg.includes('pronunciar')) {
-        response = "🎙️ Phonic Insights: Focus on the 'Schwa' sound (/ə/). It's the most common sound in English and the key to sounding natural. Try saying 'Information' and notice how the 'o' is almost silent.";
+        response = "🔢 Numbers Mastery: 1 (One), 2 (Two), 3 (Three)... ¿Quieres que practiquemos los números ordinales (First, Second...)?";
       } else if (msg.includes('interview') || msg.includes('business') || msg.includes('entrevista')) {
-        response = "🏢 Professional Mode: Let's prepare. A classic question is 'Tell me about yourself'. Remember to use 'Action Verbs' like 'Led', 'Coordinated', or 'Spearheaded'. Want to try a mock response?";
+        response = "🏢 Professional Mode: ¿Quieres que simulemos una entrevista de trabajo ahora mismo?";
+        offer = "mock_interview";
       } else {
-        response = "That's an interesting point! As your AI tutor, I can guide you through our 'Master Book' curriculum o ayudarte a practicar lo básico como el alfabeto y los números. ¿Qué prefieres hoy?";
+        response = "That's an interesting point! Como tu tutor IA de LinguaCore, puedo explicarte términos como 'grasp', 'fathom' o ayudarte con la gramática. ¿Qué quieres aprender ahora?";
       }
       
+      setLastBotOffer(offer);
       setMessages(prev => [...prev, { role: 'bot', text: response }]);
       setIsTyping(false);
     }, 1500);
@@ -71,8 +127,8 @@ const AIChatTutor: React.FC = () => {
             exit={{ opacity: 0, y: 50, scale: 0.9, filter: 'blur(10px)' }}
             className="glass-card"
             style={{
-              width: '400px',
-              height: '580px',
+              width: isMobile ? 'calc(100vw - 2.5rem)' : '400px',
+              height: isMobile ? '70vh' : '580px',
               marginBottom: '1rem',
               display: 'flex',
               flexDirection: 'column',
@@ -126,7 +182,15 @@ const AIChatTutor: React.FC = () => {
                     borderBottomLeftRadius: msg.role === 'bot' ? '4px' : '20px',
                     boxShadow: msg.role === 'user' ? '0 4px 15px rgba(99, 102, 241, 0.3)' : 'none'
                   }}>
-                    {msg.text}
+                    <ReactMarkdown 
+                      components={{
+                        p: ({node, ...props}) => <span style={{ display: 'block', marginBottom: '0.5rem' }} {...props} />,
+                        strong: ({node, ...props}) => <strong style={{ fontWeight: '900', color: msg.role === 'user' ? 'white' : 'var(--primary)' }} {...props} />,
+                        code: ({node, ...props}) => <code style={{ background: 'rgba(0,0,0,0.2)', padding: '0.1rem 0.3rem', borderRadius: '4px', fontSize: '0.85em' }} {...props} />
+                      }}
+                    >
+                      {msg.text}
+                    </ReactMarkdown>
                   </div>
                 </motion.div>
               ))}

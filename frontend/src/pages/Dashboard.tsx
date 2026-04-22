@@ -22,6 +22,13 @@ const Dashboard: React.FC = () => {
   const [leaderboard, setLeaderboard] = useState<any[]>([]); // Ranking global de XP
   const [analytics, setAnalytics] = useState<any>(null); // Datos de precisión y progreso
   const [loading, setLoading] = useState(true); // Control de carga inicial
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Mock data for the new Analytics Lab
   const statsData = {
@@ -157,7 +164,7 @@ const Dashboard: React.FC = () => {
   if (loading) return <Spinner />;
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '3rem 0 10rem' }}>
+    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: isMobile ? '1.5rem 1rem 10rem' : '3rem 2rem 10rem' }}>
       <header style={{ marginBottom: '4rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '2rem' }}>
         <div>
             <h1 style={{ fontSize: '2.8rem', fontWeight: '800', letterSpacing: '-1px', marginBottom: '0.6rem' }}>Welcome back, <span className="gradient-text">{user?.name}</span>!</h1>
@@ -207,7 +214,7 @@ const Dashboard: React.FC = () => {
         />
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1.8fr 1.2fr', gap: '3rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '2rem' }}>
         
         <div style={{ display: 'grid', gap: '3rem' }}>
             {/* New Analytics Lab */}

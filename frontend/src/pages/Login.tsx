@@ -39,7 +39,8 @@ const Login: React.FC = () => {
       display: 'flex', 
       justifyContent: 'center', 
       alignItems: 'center', 
-      height: '80vh',
+      minHeight: '75vh',
+      padding: '3rem 1rem',
       background: 'radial-gradient(circle at top right, rgba(99, 102, 241, 0.1), transparent)',
     }}>
       <motion.div 

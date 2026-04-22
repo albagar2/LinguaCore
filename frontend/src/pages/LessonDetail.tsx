@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { useTTS } from '../hooks/useTTS';
 import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
 import { useAuthStore } from '../store/authStore';
+import ReactMarkdown from 'react-markdown';
 import SmartText from '../components/SmartText';
 import Spinner from '../components/Spinner';
 
@@ -59,7 +60,7 @@ const LessonDetail: React.FC = () => {
         // Simple fuzzy match: count matching words
         const targetWords = target.split(' ');
         const spokenWords = spoken.split(' ');
-        const matches = targetWords.filter(w => spokenWords.includes(w)).length;
+        const matches = targetWords.filter((w: string) => spokenWords.includes(w)).length;
         pronunciationScore = Math.round((matches / targetWords.length) * 100);
         isCorrect = pronunciationScore > 70;
     } else {
@@ -200,11 +201,18 @@ const LessonDetail: React.FC = () => {
                 </button>
 
                 <div style={{ lineHeight: '1.8', fontSize: '1.1rem', color: 'var(--text-main)', background: 'var(--surface-alt)', padding: '2.5rem', borderRadius: '16px', border: '1px solid var(--border)' }}>
-                    {lesson.content.split('\n').map((line: string, i: number) => (
-                        <p key={i} style={{ marginBottom: '1rem' }}>
-                            <SmartText>{line}</SmartText>
-                        </p>
-                    ))}
+                    <ReactMarkdown 
+                        components={{
+                            h2: ({node, ...props}) => <h2 style={{ fontSize: '1.5rem', marginTop: '2rem', marginBottom: '1rem', color: 'var(--primary)' }} {...props} />,
+                            p: ({node, ...props}) => <p style={{ marginBottom: '1.2rem' }} {...props} />,
+                            ul: ({node, ...props}) => <ul style={{ paddingLeft: '1.5rem', marginBottom: '1.2rem' }} {...props} />,
+                            li: ({node, ...props}) => <li style={{ marginBottom: '0.5rem' }} {...props} />,
+                            code: ({node, ...props}) => <code style={{ background: 'rgba(99,102,241,0.1)', color: 'var(--primary)', padding: '0.2rem 0.4rem', borderRadius: '4px', fontWeight: 'bold' }} {...props} />,
+                            strong: ({node, ...props}) => <strong style={{ color: 'var(--primary)', fontWeight: '800' }} {...props} />
+                        }}
+                    >
+                        {lesson.content}
+                    </ReactMarkdown>
                 </div>
             </div>
 
@@ -413,12 +421,22 @@ const ExerciseRenderer = ({ exercise, feedback, selectedOption, setSelectedOptio
             )}
 
             {feedback && (
-                <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} style={{ marginTop: '2.5rem', padding: '1.5rem', borderRadius: '12px', background: feedback.correct ? 'rgba(16,185,129,0.1)' : 'rgba(244,63,94,0.1)', color: feedback.correct ? 'var(--accent)' : 'var(--danger)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <strong>{feedback.correct ? 'Correct!' : 'Correction:'}</strong>
-                        {feedback.score !== undefined && <span>Accuracy: {feedback.score}%</span>}
+                <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} style={{ marginTop: '2.5rem', padding: '2rem', borderRadius: '20px', background: feedback.correct ? 'rgba(16,185,129,0.08)' : 'rgba(244,63,94,0.08)', border: `1px solid ${feedback.correct ? 'rgba(16,185,129,0.2)' : 'rgba(244,63,94,0.2)'}` }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                            <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: feedback.correct ? 'var(--accent)' : 'var(--danger)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
+                                {feedback.correct ? <Award size={18} /> : <BookOpen size={18} />}
+                            </div>
+                            <strong style={{ fontSize: '1.1rem', color: feedback.correct ? 'var(--accent)' : 'var(--danger)' }}>
+                                {feedback.correct ? 'EXCELLENT' : 'TRANSFORMATION NEEDED'}
+                            </strong>
+                        </div>
+                        {feedback.score !== undefined && feedback.score > 0 && <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 'bold' }}>ACCURACY: {feedback.score}%</span>}
                     </div>
-                    <p style={{ marginTop: '0.5rem', color: 'var(--text-main)' }}><SmartText>{exercise.explanation}</SmartText></p>
+                    <div style={{ padding: '1.5rem', background: 'var(--surface)', borderRadius: '14px', border: '1px solid var(--border)' }}>
+                        <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', textTransform: 'uppercase', marginBottom: '0.5rem', fontWeight: '900', letterSpacing: '1px' }}>Pedagogical Insight:</p>
+                        <p style={{ color: 'var(--text-main)', fontSize: '1.05rem', lineHeight: '1.6' }}><SmartText>{exercise.explanation}</SmartText></p>
+                    </div>
                 </motion.div>
             )}
 

@@ -9,11 +9,26 @@ import { toast } from 'sonner';
 const Navbar: React.FC = () => {
   const { user, logout } = useAuthStore();
   const { isDarkMode, toggleTheme } = useThemeStore();
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  React.useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   
   const [showNotifications, setShowNotifications] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   
-  const [notifications, setNotifications] = useState(() => {
+  interface Notification {
+    id: number;
+    text: string;
+    time: string;
+    icon?: React.ReactNode;
+    read: boolean;
+  }
+
+  const [notifications, setNotifications] = useState<Notification[]>(() => {
     const storageKey = `lingua_notifications_${user?.id || 'guest'}`;
     const saved = localStorage.getItem(storageKey);
     
@@ -22,7 +37,7 @@ const Navbar: React.FC = () => {
     }
 
     // Default notifications if none saved
-    const base = [
+    const base: Notification[] = [
       { id: 1, text: `Challenge accepted by ${user?.level === 'ADVANCED' ? 'Alex_Master' : user?.level === 'INTERMEDIATE' ? 'Fluent_Sam' : 'Coach_Emma'}!`, time: "2m ago", icon: <Sparkles size={14}/>, read: false },
     ];
 
@@ -42,7 +57,7 @@ const Navbar: React.FC = () => {
   React.useEffect(() => {
     const storageKey = `lingua_notifications_${user?.id || 'guest'}`;
     // We strip React components (icons) before stringifying
-    const serializable = notifications.map(n => ({ ...n, icon: null })); 
+    const serializable = notifications.map((n: Notification) => ({ ...n, icon: null })); 
     localStorage.setItem(storageKey, JSON.stringify(serializable));
   }, [notifications, user?.id]);
 
@@ -52,7 +67,7 @@ const Navbar: React.FC = () => {
   };
 
   const handleMarkAllRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    setNotifications((prev: Notification[]) => prev.map((n: Notification) => ({ ...n, read: true })));
     toast.success("Inbox Cleared", {
         description: "All notifications have been marked as read."
     });
@@ -60,10 +75,10 @@ const Navbar: React.FC = () => {
   };
 
   const handleMarkRead = (id: number) => {
-    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+    setNotifications((prev: Notification[]) => prev.map((n: Notification) => n.id === id ? { ...n, read: true } : n));
   };
 
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = notifications.filter((n: Notification) => !n.read).length;
 
   // Since icons were stripped for storage, we re-inject them for rendering
   const getIcon = (id: number) => {
@@ -74,11 +89,24 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav style={{ padding: '1rem 2rem', background: 'var(--card-bg)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, zIndex: 100 }}>
+    <nav style={{ 
+      padding: isMobile ? '0.75rem 1.25rem' : '1rem 2rem', 
+      background: 'var(--card-bg)', 
+      backdropFilter: 'blur(20px)', 
+      borderBottom: '1px solid var(--border)', 
+      display: 'flex', 
+      justifyContent: 'space-between', 
+      alignItems: 'center', 
+      position: 'sticky', 
+      top: 0, 
+      zIndex: 100,
+      flexWrap: 'wrap',
+      gap: '1rem'
+    }}>
       <Link to="/" style={{ textDecoration: 'none', fontSize: '1.5rem', fontWeight: 'bold' }} className="gradient-text">
         LinguaCore
       </Link>
-      <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: isMobile ? '0.75rem' : '2rem', alignItems: 'center', flexWrap: 'wrap' }}>
         {user ? (
           <>
             <Link to="/dashboard" style={{ color: 'var(--text-muted)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', fontWeight: 'bold' }}>
@@ -122,11 +150,14 @@ const Navbar: React.FC = () => {
                                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
                                 className="glass-card"
                                 style={{ 
-                                    position: 'absolute', top: '120%', right: 0, width: '320px', 
-                                    padding: '1.25rem', zIndex: 1000, 
+                                    position: 'absolute', top: '125%', right: 0, 
+                                    width: isMobile ? 'calc(100vw - 2.5rem)' : '360px', 
+                                    padding: isMobile ? '1rem' : '1.5rem', 
+                                    zIndex: 1100, 
                                     background: 'var(--notification-bg)',
                                     border: '1px solid var(--notification-border)',
-                                    boxShadow: 'var(--notification-shadow)' 
+                                    boxShadow: 'var(--notification-shadow)',
+                                    transformOrigin: 'top right'
                                 }}
                             >
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
@@ -134,7 +165,7 @@ const Navbar: React.FC = () => {
                                     {unreadCount > 0 && <span style={{ fontSize: '0.6rem', background: 'var(--danger)', color: 'white', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>{unreadCount} UNREAD</span>}
                                 </div>
                                 <div style={{ display: 'grid', gap: '0.85rem' }}>
-                                    {notifications.map(n => (
+                                    {notifications.map((n: Notification) => (
                                         <motion.div 
                                             key={n.id} 
                                             onClick={() => handleMarkRead(n.id)}

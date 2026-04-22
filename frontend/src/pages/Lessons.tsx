@@ -14,6 +14,7 @@ const Lessons: React.FC = () => {
   const [lessons, setLessons] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('ALL');
+  const [levelFilter, setLevelFilter] = useState('ALL');
   const [search, setSearch] = useState('');
 
   useEffect(() => {
@@ -26,62 +27,95 @@ const Lessons: React.FC = () => {
   }, []);
 
   const categories = ['ALL', 'GRAMMAR', 'VOCABULARY', 'BUSINESS', 'LISTENING', 'SPEAKING'];
+  const levels = ['ALL', 'BEGINNER', 'INTERMEDIATE', 'ADVANCED'];
 
   const filteredLessons = lessons.filter(l => 
     (filter === 'ALL' || l.category === filter) &&
+    (levelFilter === 'ALL' || l.level === levelFilter) &&
     (l.title.toLowerCase().includes(search.toLowerCase()) || l.description.toLowerCase().includes(search.toLowerCase()))
   );
 
   if (loading) return <Spinner />;
 
   return (
-    <div style={{ paddingBottom: '10rem' }}>
-      <PageHeader 
-        title="Precision Learning."
-        badge="CURRICULUM ENGINE"
-      >
-        <Link to="/immersion" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.75rem', padding: '1rem 2.5rem', background: 'rgba(99, 102, 241, 0.1)', border: '1px solid var(--primary)', borderRadius: '16px', color: 'var(--primary)', fontWeight: '800' }}>
-            <Film size={20} fill="var(--primary)" /> EXPLORE CINEMATIC LIBRARY
-        </Link>
-      </PageHeader>
+    <div style={{ paddingBottom: '4rem' }}>
+      <div style={{ marginBottom: '2rem' }}>
+        <PageHeader 
+          title="Precision Learning."
+          badge="CURRICULUM ENGINE"
+          compact={true}
+        >
+          <Link to="/immersion" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.5rem', background: 'rgba(99, 102, 241, 0.1)', border: '1px solid var(--primary)', borderRadius: '12px', color: 'var(--primary)', fontWeight: '800', fontSize: '0.8rem' }}>
+              <Film size={16} fill="var(--primary)" /> EXPLORE CINEMATIC LIBRARY
+          </Link>
+        </PageHeader>
+      </div>
 
       {/* Controls Bar */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1.5rem', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4rem' }}>
-          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
-            {categories.map(cat => (
-                <button 
-                  key={cat}
-                  onClick={() => setFilter(cat)}
-                  style={{
-                    padding: '0.6rem 1.25rem',
-                    borderRadius: '12px',
-                    fontSize: '0.85rem',
-                    background: filter === cat ? 'var(--primary)' : 'var(--surface)',
-                    color: filter === cat ? 'white' : 'var(--text-muted)',
-                    border: filter === cat ? '1px solid var(--primary)' : '1px solid var(--border)',
-                  }}
-                >
-                    {cat}
-                </button>
-            ))}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2.5rem', background: 'var(--surface-alt)', padding: '1.25rem', borderRadius: '18px', border: '1px solid var(--border)' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', flex: 1 }}>
+              <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                {categories.map(cat => (
+                    <button 
+                      key={cat}
+                      onClick={() => setFilter(cat)}
+                      style={{
+                        padding: '0.4rem 0.8rem',
+                        borderRadius: '10px',
+                        fontSize: '0.75rem',
+                        background: filter === cat ? 'var(--primary)' : 'var(--surface)',
+                        color: filter === cat ? 'white' : 'var(--text-muted)',
+                        border: filter === cat ? '1px solid var(--primary)' : '1px solid var(--border)',
+                        fontWeight: '700',
+                        cursor: 'pointer'
+                      }}
+                    >
+                        {cat}
+                    </button>
+                ))}
+              </div>
+
+              <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                  <span style={{ fontSize: '0.7rem', fontWeight: '900', color: 'var(--text-muted)', opacity: 0.7 }}>LEVEL:</span>
+                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    {levels.map(lvl => (
+                        <button 
+                          key={lvl}
+                          onClick={() => setLevelFilter(lvl)}
+                          style={{
+                            padding: '0.3rem 0.75rem',
+                            borderRadius: '30px',
+                            fontSize: '0.7rem',
+                            background: levelFilter === lvl ? 'var(--primary-glow)' : 'transparent',
+                            color: levelFilter === lvl ? 'var(--primary)' : 'var(--text-muted)',
+                            border: `1px solid ${levelFilter === lvl ? 'var(--primary)' : 'var(--border)'}`,
+                            fontWeight: '800',
+                            cursor: 'pointer'
+                          }}
+                        >
+                            {lvl}
+                        </button>
+                    ))}
+                  </div>
+              </div>
           </div>
 
-          <div style={{ position: 'relative', width: '100%', maxWidth: '350px' }}>
-              <Search size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+          <div style={{ position: 'relative', width: '100%', maxWidth: '280px' }}>
+              <Search size={16} style={{ position: 'absolute', left: '0.9rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
               <input 
                 type="text" 
                 placeholder="Find a module..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 style={{ 
-                    width: '100%', padding: '0.8rem 1rem 0.8rem 3rem', background: 'var(--input-bg)', 
-                    border: '1px solid var(--border)', borderRadius: '14px', color: 'var(--input-color)', outline: 'none'
+                    width: '100%', padding: '0.6rem 1rem 0.6rem 2.5rem', background: 'var(--input-bg)', 
+                    border: '1px solid var(--border)', borderRadius: '12px', color: 'var(--input-color)', outline: 'none', fontSize: '0.85rem'
                 }}
               />
           </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(380px, 1fr))', gap: '2.5rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: '1.5rem' }}>
         <AnimatePresence mode="popLayout">
             {filteredLessons.map((lesson, index) => (
             <motion.div
@@ -98,15 +132,15 @@ const Lessons: React.FC = () => {
                 justifyContent: 'space-between',
                 position: 'relative',
                 overflow: 'hidden',
-                padding: '2.5rem'
+                padding: '1.75rem'
                 }}
             >
                 {/* Visual Flair */}
                 <div style={{ position: 'absolute', top: -40, right: -40, width: '120px', height: '120px', background: 'var(--primary-glow)', filter: 'blur(60px)', opacity: 0.3 }} />
                 
                 <div style={{ position: 'relative', zIndex: 1 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2.5rem' }}>
-                    <div style={{ width: '56px', height: '56px', background: 'rgba(99, 102, 241, 0.1)', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
+                    <div style={{ width: '48px', height: '48px', background: 'rgba(99, 102, 241, 0.1)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <CategoryIcon category={lesson.category} />
                     </div>
                     <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -114,14 +148,14 @@ const Lessons: React.FC = () => {
                     </div>
                 </div>
                 
-                <h3 style={{ fontSize: '1.6rem', marginBottom: '1rem', letterSpacing: '-0.02em', color: 'var(--text-main)' }}><SmartText>{lesson.title}</SmartText></h3>
-                <p style={{ color: 'var(--text-muted)', fontSize: '1rem', marginBottom: '2.5rem', lineHeight: '1.6', height: '3.2rem', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+                <h3 style={{ fontSize: '1.4rem', marginBottom: '0.75rem', letterSpacing: '-0.02em', color: 'var(--text-main)' }}><SmartText>{lesson.title}</SmartText></h3>
+                <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem', marginBottom: '1.5rem', lineHeight: '1.5', height: '3.0rem', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
                     <SmartText>{lesson.description}</SmartText>
                 </p>
                 
-                <div style={{ display: 'flex', gap: '1.5rem', marginBottom: '2.5rem', fontSize: '0.85rem', fontWeight: 'bold', color: 'var(--text-muted)' }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Clock size={16} /> 12 MIN</span>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Sparkles size={16} color="var(--warning)" /> +40 XP</span>
+                <div style={{ display: 'flex', gap: '1.25rem', marginBottom: '1.5rem', fontSize: '0.8rem', fontWeight: 'bold', color: 'var(--text-muted)' }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Clock size={14} /> 12 MIN</span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Sparkles size={14} color="var(--warning)" /> +40 XP</span>
                 </div>
                 </div>
 
