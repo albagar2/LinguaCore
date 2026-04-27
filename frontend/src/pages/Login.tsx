@@ -27,7 +27,7 @@ const Login: React.FC = () => {
       const response = await api.post('/auth/login', data);
       setAuth(response.data.user, response.data.token);
       toast.success(`Welcome back, ${response.data.user.name}!`);
-      navigate('/lessons');
+      navigate('/dashboard');
     } catch (error: any) {
       const message = error.response?.data?.message || 'Authentication failed. Please check your credentials.';
       toast.error(message);
