@@ -101,9 +101,9 @@ const Home: React.FC = () => {
                 <Link to={token ? "/dashboard" : "/register"} className="btn-primary btn-hero-main">
                     {token ? "ENTER DASHBOARD" : "START YOUR JOURNEY"} <ArrowRight size={22} className="btn-icon-right" />
                 </Link>
-                <Link to="/lessons" className="btn-secondary-glass shine-effect">
-                    EXPLORE COURSES
-                </Link>
+                <a href="#features-section" className="btn-secondary-glass shine-effect">
+                    HOW IT WORKS
+                </a>
             </motion.div>
 
             {/* Stats / Trust Banner */}
@@ -114,7 +114,7 @@ const Home: React.FC = () => {
             </motion.div>
 
             {/* Feature Highlights Grid */}
-            <div className="features-grid">
+            <div className="features-grid" id="features-section">
                 {features.map((f, i) => (
                     <FeatureCard 
                         key={f.id}

@@ -151,6 +151,76 @@ const VIDEO_CATALOG: VideoEntry[] = [
             { start: 0, end: 3, text: "Nature is beautiful and diverse." },
             { start: 3, end: 6, text: "Flowers grow in spring when it rains." }
         ]
+    },
+    {
+        id: '10',
+        title: 'NYC: The City That Never Sleeps',
+        description: 'Master urban vocabulary and daily life expressions in the Big Apple.',
+        thumbnail: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&q=80&w=800',
+        url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackAds.mp4',
+        category: 'Daily Life',
+        level: 'A1',
+        subtitles: [
+            { start: 0, end: 4, text: "New York is a city of endless possibilities." },
+            { start: 4, end: 8, text: "From the bright lights of Broadway to the quiet corners of Central Park." },
+            { start: 8, end: 12, text: "There is always something new to discover around every corner." }
+        ]
+    },
+    {
+        id: '11',
+        title: 'Next-Gen Computing',
+        description: 'Advanced technical English focusing on hardware and future tech.',
+        thumbnail: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800',
+        url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',
+        category: 'Business',
+        level: 'C1',
+        subtitles: [
+            { start: 0, end: 5, text: "The integration of quantum computing will redefine processing power." },
+            { start: 5, end: 10, text: "Scalability and efficiency are the primary focus for next-generation systems." },
+            { start: 10, end: 15, text: "We are entering a new era of human-computer interaction." }
+        ]
+    },
+    {
+        id: '12',
+        title: 'Mastering Public Speaking',
+        description: 'Learn the secrets of persuasive communication and tone control.',
+        thumbnail: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&q=80&w=800',
+        url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4',
+        category: 'Grammar',
+        level: 'B2',
+        subtitles: [
+            { start: 0, end: 4, text: "Confidence in public speaking is a skill that can be mastered with practice." },
+            { start: 4, end: 8, text: "Your body language often speaks louder than your actual words." },
+            { start: 8, end: 12, text: "Pacing and clarity are essential for delivering a powerful message." }
+        ]
+    },
+    {
+        id: '13',
+        title: 'The Art of Coffee',
+        description: 'Discover the world of coffee, from beans to the perfect morning cup.',
+        thumbnail: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&q=80&w=800',
+        url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4',
+        category: 'Daily Life',
+        level: 'A1',
+        subtitles: [
+            { start: 0, end: 4, text: "For many people, the day doesn't start until they have a cup of coffee." },
+            { start: 4, end: 8, text: "There are many ways to prepare coffee, like espresso or filter." },
+            { start: 8, end: 12, text: "Each bean has a unique flavor profile depending on its origin." }
+        ]
+    },
+    {
+        id: '14',
+        title: 'Digital Nomad Lifestyle',
+        description: 'Working from anywhere in the world: challenges and benefits of the nomadic life.',
+        thumbnail: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=800',
+        url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+        category: 'Business',
+        level: 'B2',
+        subtitles: [
+            { start: 0, end: 5, text: "The digital nomad lifestyle offers freedom but requires extreme discipline." },
+            { start: 5, end: 10, text: "Reliable internet is the most important tool for any remote worker." },
+            { start: 10, end: 15, text: "Traveling while working allows you to experience cultures in a deep way." }
+        ]
     }
 ];
 
