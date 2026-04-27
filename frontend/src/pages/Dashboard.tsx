@@ -186,13 +186,13 @@ const Dashboard: React.FC = () => {
             icon={<Flame color="#f59e0b" fill="#f59e0b" />} 
             value={`${user?.streak || 0} Days`} 
             label="Current Streak" 
-            trend="+2 today"
+            trend={user?.streak && user.streak > 0 ? "Keep the fire alive!" : "Start your journey today!"}
         />
         <StatCard 
             icon={<Star color="var(--primary)" fill="var(--primary)" />} 
             value={`${user?.xp || 0} XP`} 
             label="Total Points" 
-            trend="+150 this week"
+            trend={`+${analytics?.weeklyXp?.reduce((a: number, b: number) => a + b, 0) || 0} this week`}
         />
         <StatCard 
             icon={<Trophy color="#10b981" />} 

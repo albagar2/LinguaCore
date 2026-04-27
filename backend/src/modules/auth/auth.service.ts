@@ -24,6 +24,8 @@ export const register = async (data: any) => {
       name: true,
       role: true,
       level: true,
+      xp: true,
+      streak: true,
     },
   });
 
@@ -52,6 +54,8 @@ export const login = async (data: any) => {
       name: user.name,
       role: user.role,
       level: user.level,
+      xp: user.xp,
+      streak: user.streak,
     },
   };
 };

@@ -90,9 +90,9 @@ const Navbar: React.FC = () => {
 
   return (
     <nav style={{ 
-      padding: isMobile ? '0.75rem 1.25rem' : '1rem 2rem', 
-      background: 'var(--card-bg)', 
-      backdropFilter: 'blur(20px)', 
+      padding: isMobile ? '0.75rem 1.25rem' : '1.25rem 3rem', 
+      background: 'rgba(2, 6, 23, 0.7)', 
+      backdropFilter: 'blur(25px) saturate(180%)', 
       borderBottom: '1px solid var(--border)', 
       display: 'flex', 
       justifyContent: 'space-between', 
@@ -100,11 +100,11 @@ const Navbar: React.FC = () => {
       position: 'sticky', 
       top: 0, 
       zIndex: 100,
-      flexWrap: 'wrap',
-      gap: '1rem'
+      flexWrap: 'nowrap',
+      gap: '2rem'
     }}>
-      <Link to="/" style={{ textDecoration: 'none', fontSize: '1.5rem', fontWeight: 'bold' }} className="gradient-text">
-        LinguaCore
+      <Link to="/" style={{ textDecoration: 'none', fontSize: '1.75rem', fontWeight: '900', letterSpacing: '-0.05em', display: 'flex', alignItems: 'center', gap: '0.5rem' }} className="gradient-text">
+        <Sparkles size={24} style={{ filter: 'drop-shadow(0 0 8px var(--primary))' }} /> LinguaCore
       </Link>
       <div style={{ display: 'flex', gap: isMobile ? '0.75rem' : '2rem', alignItems: 'center', flexWrap: 'wrap' }}>
         {user ? (

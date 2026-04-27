@@ -8,8 +8,31 @@ router.get('/dashboard', authenticate, async (req: Request, res: Response, next:
     try {
         const userId = (req as any).user.id;
         
-        // 1. Weekly XP History (Mocked base on updatedAt for now)
-        const weeklyXp = [240, 380, 190, 520, 410, 670, 310]; 
+        // 1. Weekly XP History (Calculated from Progress)
+        const last7Days = [...Array(7)].map((_, i) => {
+            const d = new Date();
+            d.setHours(0,0,0,0);
+            d.setDate(d.getDate() - i);
+            return d;
+        }).reverse();
+
+        const weeklyXp = await Promise.all(last7Days.map(async (date) => {
+            const nextDay = new Date(date);
+            nextDay.setDate(nextDay.getDate() + 1);
+            
+            const progressForDay = await prisma.progress.findMany({
+                where: {
+                    userId,
+                    updatedAt: {
+                        gte: date,
+                        lt: nextDay
+                    }
+                },
+                select: { score: true }
+            });
+            
+            return progressForDay.reduce((sum, p) => sum + p.score, 0);
+        }));
 
         // 2. Accuracy by Category
         const completedLessons = await prisma.progress.findMany({

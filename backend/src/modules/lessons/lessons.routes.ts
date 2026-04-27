@@ -34,10 +34,17 @@ router.post('/:id/complete', authenticate, async (req: any, res, next) => {
     const userId = req.user.id;
     const lessonId = req.params.id;
 
-    // 1. Update/Create Progress
+    // 1. Update/Create Progress and calculate XP delta
+    const existingProgress = await prisma.progress.findUnique({
+      where: { userId_lessonId: { userId, lessonId } }
+    });
+
+    const oldScore = existingProgress?.score || 0;
+    const xpDelta = Math.max(0, score - oldScore);
+
     await prisma.progress.upsert({
       where: { userId_lessonId: { userId, lessonId } },
-      update: { completed: true, score },
+      update: { completed: true, score: Math.max(oldScore, score) },
       create: { userId, lessonId, completed: true, score }
     });
 
@@ -65,7 +72,7 @@ router.post('/:id/complete', authenticate, async (req: any, res, next) => {
     const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: {
-        xp: { increment: score },
+        xp: { increment: xpDelta },
         streak: newStreak,
         lastLogin: now
       }
