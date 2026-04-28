@@ -221,6 +221,62 @@ const VIDEO_CATALOG: VideoEntry[] = [
             { start: 5, end: 10, text: "Reliable internet is the most important tool for any remote worker." },
             { start: 10, end: 15, text: "Traveling while working allows you to experience cultures in a deep way." }
         ]
+    },
+    {
+        id: '15',
+        title: 'Modern Architecture',
+        description: 'Explore the fusion of sustainability and design in contemporary urban planning.',
+        thumbnail: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=800',
+        url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
+        category: 'Daily Life',
+        level: 'B2',
+        subtitles: [
+            { start: 0, end: 5, text: "Modern architecture increasingly prioritizes environmental integration." },
+            { start: 5, end: 10, text: "Smart materials allow buildings to breathe and respond to the weather." },
+            { start: 10, end: 15, text: "Vertical forests are transforming the skylines of major industrial cities." }
+        ]
+    },
+    {
+        id: '16',
+        title: 'Psychology of Peak Performance',
+        description: 'Advanced behavioral science insights into human motivation and focus.',
+        thumbnail: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&q=80&w=800',
+        url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+        category: 'Grammar',
+        level: 'C1',
+        subtitles: [
+            { start: 0, end: 5, text: "Achieving a state of flow requires a perfect balance between challenge and skill." },
+            { start: 5, end: 10, text: "Neuromodulators like dopamine play a crucial role in sustained motivation." },
+            { start: 10, end: 15, text: "Cognitive flexibility is the hallmark of the elite performer in any field." }
+        ]
+    },
+    {
+        id: '17',
+        title: 'The Global Trade Engine',
+        description: 'Analyzing macroeconomic trends and the future of international logistics.',
+        thumbnail: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=800',
+        url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+        category: 'Business',
+        level: 'C1',
+        subtitles: [
+            { start: 0, end: 5, text: "Global trade routes are the lifeblood of the modern industrial economy." },
+            { start: 5, end: 10, text: "Inflationary pressures have led to a reconfiguration of supply chain logic." },
+            { start: 10, end: 15, text: "Emerging markets are poised to redefine the traditional centers of commerce." }
+        ]
+    },
+    {
+        id: '18',
+        title: 'The Future of Space Exploration',
+        description: 'Advanced astrophysical and philosophical discussion on human destiny in the stars.',
+        thumbnail: 'https://images.unsplash.com/photo-1454789548928-9efd52dc4031?auto=format&fit=crop&q=80&w=800',
+        url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',
+        category: 'Daily Life',
+        level: 'C1',
+        subtitles: [
+            { start: 0, end: 5, text: "Humanity stands at a precipice, looking towards the cosmic horizon with both awe and trepidation." },
+            { start: 5, end: 10, text: "The feasibility of multi-planetary existence hinges on revolutionary breakthroughs in propulsion technology." },
+            { start: 10, end: 15, text: "Hitherto, our reach has been limited, but henceforward, the void beckons us to transcend our terrestrial bonds." }
+        ]
     }
 ];
 
