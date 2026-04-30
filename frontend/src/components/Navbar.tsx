@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuthStore } from '../store/authStore';
 import { useThemeStore } from '../store/themeStore';
-import { LogOut, User, BookOpen, LayoutDashboard, BookMarked, Sparkles, Moon, Sun, FileText, Bell, ChevronDown, Star, BrainCircuit } from 'lucide-react';
+import { LogOut, User, BookOpen, LayoutDashboard, BookMarked, Sparkles, Moon, Sun, FileText, Bell, ChevronDown, Star, BrainCircuit, Mic } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
@@ -123,6 +123,9 @@ const Navbar: React.FC = () => {
             </Link>
             <Link to="/lessons" style={{ color: 'var(--text-muted)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', fontWeight: 'bold' }}>
               <BookOpen size={20} /> Lessons
+            </Link>
+            <Link to="/interview" style={{ color: 'var(--text-muted)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', fontWeight: 'bold' }}>
+              <Mic size={20} color="var(--accent)" /> Interview
             </Link>
             {user.role === 'ADMIN' && (
               <Link to="/documentation" style={{ color: 'var(--text-muted)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', fontWeight: 'bold' }}>

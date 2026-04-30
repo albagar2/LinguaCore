@@ -483,6 +483,8 @@ const VideoImmersion: React.FC = () => {
                                     onClick={(e) => { e.stopPropagation(); speak(sub.text); }}
                                     style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', padding: '0.5rem', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                                     className="hover-glow"
+                                    aria-label="Play subtitle audio"
+                                    title="Play subtitle audio"
                                 >
                                     <Volume2 size={18} />
                                 </button>

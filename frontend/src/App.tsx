@@ -13,6 +13,7 @@ import WritingCoach from './pages/WritingCoach';
 import Flashcards from './pages/Flashcards';
 import Documentation from './pages/Documentation';
 import VideoImmersion from './pages/VideoImmersion';
+import InterviewSimulator from './pages/InterviewSimulator';
 
 import { useAuthStore } from './store/authStore';
 import { useThemeStore } from './store/themeStore';
@@ -132,6 +133,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <VideoImmersion />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/interview" 
+            element={
+              <ProtectedRoute>
+                <InterviewSimulator />
               </ProtectedRoute>
             } 
           />
