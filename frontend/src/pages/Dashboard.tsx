@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
     Flame, Star, Trophy, Target, Download, Map, 
-    Award, Users, BrainCircuit, BookOpen, ChevronRight, Zap, Film
+    Award, Users, BrainCircuit, BookOpen, ChevronRight, Zap, Film, Sparkles
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import api from '../services/api';
@@ -15,7 +15,7 @@ import AchievementsCabinet from '../components/AchievementsCabinet';
 
 const Dashboard: React.FC = () => {
   // Estado global de la sesión del usuario
-  const { user } = useAuthStore();
+  const { user, isGuest } = useAuthStore();
   
   // Estados locales para la gestión de datos asíncronos
   const [stats, setStats] = useState<any>(null); // Recomendaciones de lecciones
@@ -179,6 +179,53 @@ const Dashboard: React.FC = () => {
             </p>
         </div>
       </header>
+
+      {/* Showcase Mode Description (Only for Guests) */}
+      {isGuest && (
+        <motion.section 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="glass-card"
+          style={{ 
+            padding: '2.5rem', 
+            marginBottom: '4rem', 
+            border: '2px solid var(--primary)',
+            background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, transparent 100%)',
+            position: 'relative',
+            overflow: 'hidden'
+          }}
+        >
+          <div style={{ position: 'absolute', top: '-50px', right: '-50px', width: '200px', height: '200px', background: 'var(--primary)', borderRadius: '50%', filter: 'blur(80px)', opacity: 0.15, zIndex: 0 }} />
+          
+          <div style={{ position: 'relative', zIndex: 1 }}>
+            <h2 style={{ fontSize: '1.8rem', fontWeight: '800', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <Sparkles size={28} color="var(--primary)" /> Project Showcase: LinguaCore
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem' }}>
+              <div>
+                <h4 style={{ color: 'var(--primary)', marginBottom: '0.5rem', fontSize: '1.1rem' }}>The Mission</h4>
+                <p style={{ color: 'var(--text-muted)', lineHeight: '1.6', fontSize: '0.95rem' }}>
+                  LinguaCore is a high-fidelity language learning ecosystem designed to bridge the gap between academic theory and real-world fluency using <strong>Autonomous AI Agents</strong> and <strong>Cognitive Analytics</strong>.
+                </p>
+              </div>
+              <div>
+                <h4 style={{ color: 'var(--primary)', marginBottom: '0.5rem', fontSize: '1.1rem' }}>Core Technology</h4>
+                <ul style={{ color: 'var(--text-muted)', paddingLeft: '1.2rem', fontSize: '0.9rem', lineHeight: '1.8' }}>
+                  <li><strong>Neural Speech Engine:</strong> Real-time phoneme correction.</li>
+                  <li><strong>SRS Intelligence:</strong> Adaptive memory retention logic.</li>
+                  <li><strong>Generative AI:</strong> Dynamic writing and interview simulation.</li>
+                </ul>
+              </div>
+              <div>
+                <h4 style={{ color: 'var(--primary)', marginBottom: '0.5rem', fontSize: '1.1rem' }}>Showcase Mode</h4>
+                <p style={{ color: 'var(--text-muted)', lineHeight: '1.6', fontSize: '0.95rem' }}>
+                  You are currently exploring the <strong>Read-Only Experience</strong>. Feel free to navigate all modules; write operations are intercepted and simulated locally to protect the showcase database.
+                </p>
+              </div>
+            </div>
+          </div>
+        </motion.section>
+      )}
 
       {/* Grid de Estadísticas Principales */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.75rem', marginBottom: '4rem' }}>
