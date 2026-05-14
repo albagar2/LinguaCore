@@ -14,7 +14,8 @@ interface User {
 interface AuthState {
   user: User | null;
   token: string | null;
-  setAuth: (user: User, token: string) => void;
+  isGuest: boolean;
+  setAuth: (user: User, token: string, isGuest?: boolean) => void;
   updateUser: (updates: Partial<User>) => void;
   logout: () => void;
 }
@@ -22,10 +23,12 @@ interface AuthState {
 export const useAuthStore = create<AuthState>((set) => ({
   user: JSON.parse(localStorage.getItem('user') || 'null'),
   token: localStorage.getItem('token'),
-  setAuth: (user, token) => {
+  isGuest: localStorage.getItem('isGuest') === 'true',
+  setAuth: (user, token, isGuest = false) => {
     localStorage.setItem('user', JSON.stringify(user));
     localStorage.setItem('token', token);
-    set({ user, token });
+    localStorage.setItem('isGuest', isGuest.toString());
+    set({ user, token, isGuest });
   },
   updateUser: (updates) => {
     set((state) => {
@@ -37,6 +40,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   logout: () => {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
-    set({ user: null, token: null });
+    localStorage.removeItem('isGuest');
+    set({ user: null, token: null, isGuest: false });
   },
 }));

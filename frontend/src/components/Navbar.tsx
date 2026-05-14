@@ -7,9 +7,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 
 const Navbar: React.FC = () => {
-  const { user, logout } = useAuthStore();
-  const { isDarkMode, toggleTheme } = useThemeStore();
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+    const { user, logout, isGuest } = useAuthStore();
+    const { isDarkMode, toggleTheme } = useThemeStore();
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   React.useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -215,7 +215,22 @@ const Navbar: React.FC = () => {
                         style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '1rem', background: 'var(--icon-bg)', padding: '0.5rem 1.25rem', borderRadius: '30px', border: '1px solid var(--border)', transition: '0.3s' }}
                     >
                         <User size={18} color="var(--primary)" />
-                        <span style={{ fontSize: '0.9rem', fontWeight: 'bold' }}>{user.name}</span>
+                        <span style={{ fontSize: '0.9rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          {user.name}
+                          {isGuest && (
+                            <span style={{ 
+                              fontSize: '0.65rem', 
+                              background: '#f59e0b', 
+                              color: 'white', 
+                              padding: '0.1rem 0.4rem', 
+                              borderRadius: '4px',
+                              letterSpacing: '0.05em',
+                              fontWeight: '900'
+                            }}>
+                              GUEST
+                            </span>
+                          )}
+                        </span>
                         <ChevronDown size={14} color="var(--text-muted)" />
                     </div>
 

@@ -18,20 +18,28 @@ const Login: React.FC = () => {
   const [showPassword, setShowPassword] = React.useState(false);
   const { setAuth } = useAuthStore();
   const navigate = useNavigate();
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm({
+  const { register, handleSubmit, setValue, formState: { errors, isSubmitting } } = useForm({
     resolver: zodResolver(loginSchema),
   });
 
   const onSubmit = async (data: any) => {
     try {
       const response = await api.post('/auth/login', data);
-      setAuth(response.data.user, response.data.token);
-      toast.success(`Welcome back, ${response.data.user.name}!`);
+      setAuth(response.data.user, response.data.token, data.isGuest || false);
+      toast.success(`Welcome back, ${response.data.user.name}! ${data.isGuest ? '(Guest Mode)' : ''}`);
       navigate('/dashboard');
     } catch (error: any) {
       const message = error.response?.data?.message || 'Authentication failed. Please check your credentials.';
       toast.error(message);
     }
+  };
+
+  const handleGuestLogin = async () => {
+    setValue('email', 'admin@linguacore.com');
+    setValue('password', 'admin123');
+    
+    // Trigger login with isGuest flag
+    onSubmit({ email: 'admin@linguacore.com', password: 'admin123', isGuest: true });
   };
 
   return (
@@ -128,23 +136,55 @@ const Login: React.FC = () => {
             {errors.password && <span style={{ color: 'var(--danger)', fontSize: '0.75rem', marginTop: '0.25rem', display: 'block' }}>{(errors.password as any).message}</span>}
           </div>
 
-          <button 
-            type="submit" 
-            className="btn-primary" 
-            disabled={isSubmitting} 
-            style={{ 
-              marginTop: '1.5rem', 
-              padding: '1rem', 
-              fontSize: '1rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.75rem',
-              width: '100%'
-            }}
-          >
-            {isSubmitting ? 'Verifying...' : 'Sign In Now'}
-          </button>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem' }}>
+            <button 
+              type="submit" 
+              className="btn-primary" 
+              disabled={isSubmitting} 
+              style={{ 
+                padding: '1rem', 
+                fontSize: '1rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.75rem',
+                width: '100%'
+              }}
+            >
+              {isSubmitting ? 'Verifying...' : 'Sign In Now'}
+            </button>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', color: 'var(--text-muted)', fontSize: '0.75rem' }}>
+              <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
+              <span>OR</span>
+              <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
+            </div>
+
+            <button 
+              type="button"
+              onClick={handleGuestLogin}
+              className="btn-secondary" 
+              disabled={isSubmitting} 
+              style={{ 
+                padding: '1rem', 
+                fontSize: '1rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.75rem',
+                width: '100%',
+                background: 'rgba(99, 102, 241, 0.05)',
+                border: '1px solid var(--primary)',
+                color: 'var(--primary)',
+                borderRadius: '12px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              <LogIn size={18} /> Continue as Guest (Read-only)
+            </button>
+          </div>
         </form>
 
         {/* Portfolio Demo Message */}
@@ -163,7 +203,7 @@ const Login: React.FC = () => {
           <div style={{ textAlign: 'left' }}>
             <p style={{ fontSize: '0.85rem', fontWeight: 'bold', marginBottom: '0.25rem', color: 'var(--text-main)' }}>Portfolio Showcase Mode</p>
             <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: '1.4' }}>
-              Use <code style={{ color: 'var(--primary)', fontWeight: 'bold' }}>admin@linguacore.com</code> / <code style={{ color: 'var(--primary)', fontWeight: 'bold' }}>admin1234</code> to access all features.
+              Guest mode allows you to explore all features without affecting the database. Perfect for recruiters and clients.
             </p>
           </div>
         </div>
